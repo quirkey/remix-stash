@@ -24,9 +24,14 @@ class Stash::Cluster
   # Note: Later, I'd like to support richer cluster definitions.
   # This should do the trick for now... and it's fast.
   def select(key)
-    digest = Digest::MD5.digest(key)
-    hash = digest.unpack("L")[0]
     count = @hosts.size
+    hash = nil
+    if count > 1
+      digest = Digest::MD5.digest(key)
+      hash = digest.unpack("L")[0]
+    else
+      hash = 0
+    end
     count.times do |try|
       begin
         break yield(host_to_io(*@hosts[(hash + try) % count]))
