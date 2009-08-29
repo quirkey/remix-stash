@@ -11,12 +11,52 @@ Gem::Specification.new do |s|
   s.authors = ["Brian Mitchell"]
   s.date = %q{2009-08-29}
   s.email = %q{binary42@gmail.com}
+  s.extra_rdoc_files = [
+    "LICENSE",
+     "README.mdown"
+  ]
+  s.files = [
+    ".gitignore",
+     "LICENSE",
+     "README.mdown",
+     "Rakefile",
+     "VERSION",
+     "examples/bench.rb",
+     "examples/eval.rb",
+     "examples/gate.rb",
+     "examples/getset.rb",
+     "examples/getset_cache.rb",
+     "examples/scope.rb",
+     "examples/stash.rb",
+     "harness.rb",
+     "harness_cache.rb",
+     "lib/remix/stash.rb",
+     "lib/remix/stash/cluster.rb",
+     "lib/remix/stash/extension.rb",
+     "lib/remix/stash/protocol.rb",
+     "remix-stash.gemspec",
+     "spec/extension_spec.rb",
+     "spec/spec.rb",
+     "spec/stash_spec.rb"
+  ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/binary42/remix-stash}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{Remix your memcache}
+  s.test_files = [
+    "spec/extension_spec.rb",
+     "spec/spec.rb",
+     "spec/stash_spec.rb",
+     "examples/bench.rb",
+     "examples/eval.rb",
+     "examples/gate.rb",
+     "examples/getset.rb",
+     "examples/getset_cache.rb",
+     "examples/scope.rb",
+     "examples/stash.rb"
+  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
