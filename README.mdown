@@ -1,5 +1,11 @@
 Coming Soon!
 
+# Quick Specs
+
+It's fast (over 2x faster than memcache-client). It's simple (pure ruby and only a few hundred lines). It's tested (shoulda).
+
+It does require memcached 1.4+ but you should be running that anyway (if you aren't, upgrade already).
+
 # TODO
 
 * clear on root should do it for each host in a cluster
