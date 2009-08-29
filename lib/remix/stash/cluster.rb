@@ -46,7 +46,7 @@ private
     timeout = [2,0].pack('l_2') # 2 seconds
     socket.setsockopt(SOL_SOCKET, SO_SNDTIMEO, timeout)
     socket.setsockopt(SOL_SOCKET, SO_RCVTIMEO, timeout)
-    socket.connect(Socket.pack_sockaddr_in(port, address[0][3]))
+    socket.connect(Socket.pack_sockaddr_in(port, address[3]))
     socket
   end
 
