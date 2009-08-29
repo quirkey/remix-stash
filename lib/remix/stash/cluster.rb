@@ -2,6 +2,7 @@ require 'socket'
 require 'digest/md5'
 
 class Stash::Cluster
+  include Socket::Constants
 
   @@connections = {}
 
@@ -39,8 +40,18 @@ class Stash::Cluster
 
 private
 
+  def conntect(host, port)
+    address = Socket.getaddrinfo(host, nil).first
+    socket = Socket.new(Socket.get_const(address[0]), SOCK_STREAM, 0)
+    timeout = [2,0].pack('l_2') # 2 seconds
+    socket.setopt(SOL_SOCKET, SO_SNDTIMEO, timeout)
+    socket.setopt(SOL_SOCKET, SO_RCVTIMEO, timeout)
+    socket.connect(Socket.pack_sockaddr_in(port, address[0][3]))
+    socket
+  end
+
   def host_to_io(key, host, port)
-    @@connections[key] ||= TCPSocket.new(host, port)
+    @@connections[key] ||= connect(host, port)
   end
 
 end
