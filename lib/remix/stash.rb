@@ -102,9 +102,9 @@ class Stash
     key = canonical_key(keys)
     cluster.select(key) {|io|
       if Protocol.get(io, key)
+        yield(*keys)
         true
       else
-        yield(*keys)
         false
       end
     }

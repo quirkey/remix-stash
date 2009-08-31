@@ -249,17 +249,17 @@ class StashSpec < Spec
 
   context '#gate' do
 
-    should 'evaluate on a key miss' do
+    should 'not evaluate on a key miss' do
       ran = false
       stash.gate(:k) {ran = true}
-      assert ran
+      assert !ran
     end
 
-    should 'not evaluate on a key hit' do
+    should 'evaluate on a key hit' do
       ran = false
       stash[:k] = :hit
       stash.gate(:k) {ran = true}
-      assert !ran
+      assert ran
     end
 
     should 'return true on hit' do
@@ -273,6 +273,7 @@ class StashSpec < Spec
 
     should 'pass keys in as optional block arguments' do
       key = nil
+      stash[42] = true
       stash.gate(42) {|k| key = k}
       assert_equal 42, key
     end
