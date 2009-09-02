@@ -74,7 +74,7 @@ class Stash
       [:dynamic, :action, :transaction].include?(opts[:coherency]) or raise ArgumentError,
         "Invalid coherency setting used (#{opts[:coherency].inspect})"
     end
-    root = @@instances[:roto] || Stash.new(:root)
+    root = @@instances[:root] || Stash.new(:root)
     self == root ?
       base :
       root.default.merge(base)
