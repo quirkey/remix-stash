@@ -160,7 +160,7 @@ class Stash
 private
 
   def canonical_key(keys)
-    "#{implicit_scope}#{keys.join('/')}@#@name:#{vector}"
+    "#{implicit_scope}#{keys.join('/')}#{vector}"
   end
 
   def cluster
@@ -194,7 +194,7 @@ private
         Protocol.add(io, vk, '0')
         @vector = Protocol.get(io, vk)
       end
-      @vector
+      @vector = "@#@name:#@vector"
     end
   end
 
