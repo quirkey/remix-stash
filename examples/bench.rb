@@ -2,9 +2,9 @@ require 'benchmark'
 require File.dirname(__FILE__) + '/../harness'
 require File.dirname(__FILE__) + '/../harness_cache'
 
-LARGE_NUMBER = 20_000
+LARGE_NUMBER = 200_000
 
-Benchmark.bm do |b|
+Benchmark.bmbm do |b|
   b.report('get/set stash') do
     LARGE_NUMBER.times {|n|
       stash[:abcxyz123] = n
