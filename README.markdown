@@ -8,6 +8,8 @@ It does require memcached 1.4+ but you should be running that anyway (if you are
 
 # TODO
 
+* write extras, keys, and values directly to avoid packing overhead
+* gracefully handle connection interruptions
 * optimize option merging with cache
 * make clusters selectable per stash
 * implement the rest of the memcached 1.4 binary API
