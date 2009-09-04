@@ -1,7 +1,7 @@
 module Stash::Protocol
   extend self
 
-  HEADER_FORMAT = "CCnCCnNa4a8"
+  HEADER_FORMAT = "CCnCCnNNQ"
 
   # Magic codes
   REQUEST   = 0x80
@@ -66,7 +66,7 @@ module Stash::Protocol
     #   Expiry     (28-31): 0x00000e10
     # Key          (32-36): The textual string "Hello"
     # Value        (37-41): The textual string "World"
-    header = [REQUEST, ADD, key.size, 8, 0, 0, data.size + key.size + 8, '', '', 0, 0, key, data].pack(HEADER_FORMAT + 'NNa*a*')
+    header = [REQUEST, ADD, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0].pack(HEADER_FORMAT + 'NN') << key << data
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR
@@ -90,7 +90,7 @@ module Stash::Protocol
     # Key                 : Textual string "counter"
     # Value               : None
     low, high = split64(step)
-    header = [REQUEST, DECREMENT, key.size, 20, 0, 0, key.size + 20, '', '', high, low, 0, COUNTER_FAULT_EXPIRATION, key].pack(HEADER_FORMAT + 'NNQNa*')
+    header = [REQUEST, DECREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION].pack(HEADER_FORMAT + 'NNQN') << key
     io.write(header)
     resp = read_resp(io)
     if resp[:status] == NO_ERROR
@@ -112,7 +112,7 @@ module Stash::Protocol
     # Extras              : None
     # Key                 : The textual string "Hello"
     # Value               : None
-    header = [REQUEST, DELETE, key.size, 0, 0, 0, key.size, '', '', key].pack(HEADER_FORMAT + 'a*')
+    header = [REQUEST, DELETE, key.size, 0, 0, 0, key.size, 0, 0].pack(HEADER_FORMAT) << key
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR
@@ -131,7 +131,7 @@ module Stash::Protocol
     # CAS          (16-23): 0x0000000000000000
     # Extras              :
     #    Expiry    (24-27): 0x000e10
-    header = [REQUEST, FLUSH, 0, 4, 0, 0, 4, '', '', 0].pack(HEADER_FORMAT + 'N')
+    header = [REQUEST, FLUSH, 0, 4, 0, 0, 4, 0, 0, 0].pack(HEADER_FORMAT + 'N')
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR
@@ -151,7 +151,7 @@ module Stash::Protocol
     # Extras              : None
     # Key          (24-29): The textual string: "Hello"
     # Value               : None
-    header = [REQUEST, GET, key.size, 0, 0, 0, key.size, '', '', key].pack(HEADER_FORMAT + 'a*')
+    header = [REQUEST, GET, key.size, 0, 0, 0, key.size, 0, 0].pack(HEADER_FORMAT) << key
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR ? parse_get(resp[:body])[:value] : nil
@@ -179,7 +179,7 @@ module Stash::Protocol
     # Key                 : Textual string "counter"
     # Value               : None
     low, high = split64(step)
-    header = [REQUEST, INCREMENT, key.size, 20, 0, 0, key.size + 20, '', '', high, low, 0, COUNTER_FAULT_EXPIRATION, key].pack(HEADER_FORMAT + 'NNQNa*')
+    header = [REQUEST, INCREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION].pack(HEADER_FORMAT + 'NNQN') << key
     io.write(header)
     resp = read_resp(io)
     if resp[:status] == NO_ERROR
@@ -203,18 +203,14 @@ module Stash::Protocol
     #   Expiry     (28-31): 0x00000e10
     # Key          (32-36): The textual string "Hello"
     # Value        (37-41): The textual string "World"
-    header = [REQUEST, SET, key.size, 8, 0, 0, data.size + key.size + 8, '', '', 0, 0, key, data].pack(HEADER_FORMAT + 'NNa*a*')
-    io.write(header)
+    header = [REQUEST, SET, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0].pack(HEADER_FORMAT + 'NN') << key << data
+    io << header
     resp = read_resp(io)
     resp[:status] == NO_ERROR
   end
 
   def set_value(io, key, value, ttl = 0)
     set(io, key, Marshal.dump(value), ttl)
-  end
-
-  def method_missing(message, *a)
-    fail [:NOT_IMPLEMENTED, self, message, *a].inspect
   end
 
 private
@@ -242,7 +238,7 @@ private
     resp = { :magic => magic, :opcode => opcode, :key_length => key_length,
       :extra => extra, :type => type, :status => status,
       :body_length => body_length, :opaque => opaque, :cas => cas }
-    resp[:body] = io.read(resp[:body_length]) if resp[:body_length] > 0
+    resp[:body] = io.read(body_length) if body_length > 0
     resp
   end
 
