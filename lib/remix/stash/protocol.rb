@@ -50,47 +50,18 @@ module Stash::Protocol
   # Extras
   COUNTER_FAULT_EXPIRATION = 0xFFFFFFFF
 
+  ADD_PACKET = HEADER_FORMAT + 'NNa*a*'
   def add(io, key, data)
-    # Field        (offset) (value)
-    # Magic        (0)    : 0x80
-    # Opcode       (1)    : 0x02
-    # Key length   (2,3)  : 0x0005
-    # Extra length (4)    : 0x08
-    # Data type    (5)    : 0x00
-    # Reserved     (6,7)  : 0x0000
-    # Total body   (8-11) : 0x00000012
-    # Opaque       (12-15): 0x00000000
-    # CAS          (16-23): 0x0000000000000000
-    # Extras              :
-    #   Flags      (24-27): 0xdeadbeef
-    #   Expiry     (28-31): 0x00000e10
-    # Key          (32-36): The textual string "Hello"
-    # Value        (37-41): The textual string "World"
-    header = [REQUEST, ADD, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0].pack(HEADER_FORMAT + 'NN') << key << data
+    header = [REQUEST, ADD, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0, key, data].pack(ADD_PACKET)
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR
   end
 
+  DECR_PACKET = HEADER_FORMAT + 'NNQNa*'
   def decr(io, key, step)
-    # Field        (offset) (value)
-    # Magic        (0)    : 0x80
-    # Opcode       (1)    : 0x06
-    # Key length   (2,3)  : 0x0007
-    # Extra length (4)    : 0x14
-    # Data type    (5)    : 0x00
-    # Reserved     (6,7)  : 0x0000
-    # Total body   (8-11) : 0x0000001b
-    # Opaque       (12-15): 0x00000000
-    # CAS          (16-23): 0x0000000000000000
-    # Extras              :
-    #   delta      (24-31): 0x0000000000000001
-    #   initial    (32-39): 0x0000000000000000
-    #   exipration (40-43): 0x00000e10
-    # Key                 : Textual string "counter"
-    # Value               : None
     low, high = split64(step)
-    header = [REQUEST, DECREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION].pack(HEADER_FORMAT + 'NNQN') << key
+    header = [REQUEST, DECREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION, key].pack(DECR_PACKET)
     io.write(header)
     resp = read_resp(io)
     if resp[:status] == NO_ERROR
@@ -98,60 +69,25 @@ module Stash::Protocol
     end
   end
 
+  DELETE_PACKET = HEADER_FORMAT + 'a*'
   def delete(io, key, ttl = 0)
-    # Field        (offset) (value)
-    # Magic        (0)    : 0x80
-    # Opcode       (1)    : 0x04
-    # Key length   (2,3)  : 0x0005
-    # Extra length (4)    : 0x00
-    # Data type    (5)    : 0x00
-    # Reserved     (6,7)  : 0x0000
-    # Total body   (8-11) : 0x00000005
-    # Opaque       (12-15): 0x00000000
-    # CAS          (16-23): 0x0000000000000000
-    # Extras              : None
-    # Key                 : The textual string "Hello"
-    # Value               : None
-    header = [REQUEST, DELETE, key.size, 0, 0, 0, key.size, 0, 0].pack(HEADER_FORMAT) << key
+    header = [REQUEST, DELETE, key.size, 0, 0, 0, key.size, 0, 0, key].pack(DELETE_PACKET)
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR
   end
 
+  FLUSH_PACKET = HEADER_FORMAT + 'N'
   def flush(io)
-    # Field        (offset) (value)
-    # Magic        (0)    : 0x80
-    # Opcode       (1)    : 0x08
-    # Key length   (2,3)  : 0x0000
-    # Extra length (4)    : 0x04
-    # Data type    (5)    : 0x00
-    # Reserved     (6,7)  : 0x0000
-    # Total body   (8-11) : 0x00000004
-    # Opaque       (12-15): 0x00000000
-    # CAS          (16-23): 0x0000000000000000
-    # Extras              :
-    #    Expiry    (24-27): 0x000e10
-    header = [REQUEST, FLUSH, 0, 4, 0, 0, 4, 0, 0, 0].pack(HEADER_FORMAT + 'N')
+    header = [REQUEST, FLUSH, 0, 4, 0, 0, 4, 0, 0, 0].pack(FLUSH_PACKET)
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR
   end
 
+  GET_PACKET = HEADER_FORMAT + 'a*'
   def get(io, key)
-    # Field        (offset) (value)
-    # Magic        (0)    : 0x80
-    # Opcode       (1)    : 0x00
-    # Key length   (2,3)  : 0x0005
-    # Extra length (4)    : 0x00
-    # Data type    (5)    : 0x00
-    # Reserved     (6,7)  : 0x0000
-    # Total body   (8-11) : 0x00000005
-    # Opaque       (12-15): 0x00000000
-    # CAS          (16-23): 0x0000000000000000
-    # Extras              : None
-    # Key          (24-29): The textual string: "Hello"
-    # Value               : None
-    header = [REQUEST, GET, key.size, 0, 0, 0, key.size, 0, 0].pack(HEADER_FORMAT) << key
+    header = [REQUEST, GET, key.size, 0, 0, 0, key.size, 0, 0, key].pack(GET_PACKET)
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR ? parse_get(resp[:body])[:value] : nil
@@ -161,25 +97,10 @@ module Stash::Protocol
     load_ruby_value(get(io, key))
   end
 
+  INCR_PACKET = HEADER_FORMAT + 'NNQNa*'
   def incr(io, key, step)
-    # Field        (offset) (value)
-    # Magic        (0)    : 0x80
-    # Opcode       (1)    : 0x05
-    # Key length   (2,3)  : 0x0007
-    # Extra length (4)    : 0x14
-    # Data type    (5)    : 0x00
-    # Reserved     (6,7)  : 0x0000
-    # Total body   (8-11) : 0x0000001b
-    # Opaque       (12-15): 0x00000000
-    # CAS          (16-23): 0x0000000000000000
-    # Extras              :
-    #   delta      (24-31): 0x0000000000000001
-    #   initial    (32-39): 0x0000000000000000
-    #   exipration (40-43): 0x00000e10
-    # Key                 : Textual string "counter"
-    # Value               : None
     low, high = split64(step)
-    header = [REQUEST, INCREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION].pack(HEADER_FORMAT + 'NNQN') << key
+    header = [REQUEST, INCREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION, key].pack(INCR_PACKET)
     io.write(header)
     resp = read_resp(io)
     if resp[:status] == NO_ERROR
@@ -187,23 +108,9 @@ module Stash::Protocol
     end
   end
 
+  SET_PACKET = HEADER_FORMAT + 'NNa*a*'
   def set(io, key, data, ttl = 0)
-    # Field        (offset) (value)
-    # Magic        (0)    : 0x80
-    # Opcode       (1)    : 0x01
-    # Key length   (2,3)  : 0x0005
-    # Extra length (4)    : 0x08
-    # Data type    (5)    : 0x00
-    # Reserved     (6,7)  : 0x0000
-    # Total body   (8-11) : 0x00000012
-    # Opaque       (12-15): 0x00000000
-    # CAS          (16-23): 0x0000000000000000
-    # Extras              :
-    #   Flags      (24-27): 0xdeadbeef
-    #   Expiry     (28-31): 0x00000e10
-    # Key          (32-36): The textual string "Hello"
-    # Value        (37-41): The textual string "World"
-    header = [REQUEST, SET, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0].pack(HEADER_FORMAT + 'NN') << key << data
+    header = [REQUEST, SET, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0, key, data].pack(SET_PACKET)
     io << header
     resp = read_resp(io)
     resp[:status] == NO_ERROR

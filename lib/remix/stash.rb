@@ -159,8 +159,9 @@ class Stash
 
 private
 
+  KEY_SEPARATOR = '/'
   def canonical_key(keys)
-    "#{implicit_scope}#{keys.join('/')}#{vector}"
+    "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector}"
   end
 
   def cluster
@@ -175,12 +176,13 @@ private
     params.last.is_a?(Hash) ? default.merge(params.pop) : default
   end
 
+  EMPTY_SCOPE = ''
   def implicit_scope
     if @scope
       scope = @scope.call(self)
-      scope ? "#{scope}/" : ''
+      scope ? "#{scope}/" : EMPTY_SCOPE
     else
-      ''
+      EMPTY_SCOPE
     end
   end
 
