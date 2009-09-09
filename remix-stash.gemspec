@@ -5,23 +5,24 @@
 
 Gem::Specification.new do |s|
   s.name = %q{remix-stash}
-  s.version = "0.9.1"
+  s.version = "0.9.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Mitchell"]
-  s.date = %q{2009-09-02}
+  s.date = %q{2009-09-09}
   s.email = %q{binary42@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.mdown"
+     "README.markdown"
   ]
   s.files = [
     ".gitignore",
      "LICENSE",
-     "README.mdown",
+     "README.markdown",
      "Rakefile",
      "VERSION",
-     "examples/bench.rb",
+     "benchmarks/get_set.rb",
+     "benchmarks/payload.rb",
      "examples/eval.rb",
      "examples/gate.rb",
      "examples/getset.rb",
@@ -49,7 +50,6 @@ Gem::Specification.new do |s|
     "spec/extension_spec.rb",
      "spec/spec.rb",
      "spec/stash_spec.rb",
-     "examples/bench.rb",
      "examples/eval.rb",
      "examples/gate.rb",
      "examples/getset.rb",
