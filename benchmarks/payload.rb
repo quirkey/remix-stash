@@ -4,21 +4,34 @@ require File.dirname(__FILE__) + '/../harness_cache'
 
 LARGE_NUMBER = 20_000
 
-large_value = 'a' * 100_000
-med_value = 'b' * 2_000
-small_value = 'c' * 100
-tiny_value = 'd'
+huge_value = 'a' * 100_000
+large_value = 'b' * 20_000
+med_value = 'c' * 2_000
+small_value = 'd' * 100
+tiny_value = 'e'
 
 KEY = 'abc123xyz'
 
 Benchmark.bmbm do |b|
   b.report('100k stash') do
     LARGE_NUMBER.times {
-      stash.write(KEY, large_value)
+      stash.write(KEY, huge_value)
       stash.read(KEY)
     }
   end
   b.report('100k cache') do
+    LARGE_NUMBER.times {
+      Cache.set(KEY, huge_value, 0, true)
+      Cache.get(KEY, true)
+    }
+  end
+  b.report('20k stash') do
+    LARGE_NUMBER.times {
+      stash.write(KEY, large_value)
+      stash.read(KEY)
+    }
+  end
+  b.report('20k cache') do
     LARGE_NUMBER.times {
       Cache.set(KEY, large_value, 0, true)
       Cache.get(KEY, true)
