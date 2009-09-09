@@ -52,7 +52,7 @@ module Stash::Protocol
 
   ADD_PACKET = HEADER_FORMAT + 'NNa*a*'
   def add(io, key, data, ttl = 0)
-    header = [REQUEST, ADD, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0, key, data].pack(ADD_PACKET)
+    header = [REQUEST, ADD, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, ttl, key, data].pack(ADD_PACKET)
     io.write(header)
     resp = read_resp(io)
     resp[:status] == NO_ERROR
@@ -110,7 +110,7 @@ module Stash::Protocol
 
   SET_PACKET = HEADER_FORMAT + 'NNa*a*'
   def set(io, key, data, ttl = 0)
-    header = [REQUEST, SET, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0, key, data].pack(SET_PACKET)
+    header = [REQUEST, SET, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, ttl, key, data].pack(SET_PACKET)
     io << header
     resp = read_resp(io)
     resp[:status] == NO_ERROR
