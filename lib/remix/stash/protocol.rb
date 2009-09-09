@@ -51,7 +51,7 @@ module Stash::Protocol
   COUNTER_FAULT_EXPIRATION = 0xFFFFFFFF
 
   ADD_PACKET = HEADER_FORMAT + 'NNa*a*'
-  def add(io, key, data)
+  def add(io, key, data, ttl = 0)
     header = [REQUEST, ADD, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, 0, key, data].pack(ADD_PACKET)
     io.write(header)
     resp = read_resp(io)

@@ -105,6 +105,21 @@ class StashSpec < Spec
 
   end
 
+  context '#add' do
+
+    should 'allow keys to be set with new values' do
+      assert stash.add('f', '42')
+      assert_equal '42', stash.read('f')
+    end
+
+    should 'not overwrite existing values' do
+      stash['f'] = '43'
+      assert !stash.add('f', '42')
+      assert_equal '43', stash['f']
+    end
+
+  end
+
   context '#clear' do
 
     setup do

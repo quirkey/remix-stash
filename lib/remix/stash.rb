@@ -33,6 +33,13 @@ class Stash
     @opts = name == :root ? {:coherency => :action, :ttl => 0} : {}
   end
 
+  def add(*keys)
+    opts = default_opts(keys)
+    value = keys.pop
+    key = canonical_key(keys)
+    cluster.select(key) {|io| Protocol.add(io, key, value, opts[:ttl])}
+  end
+
   def clear(*keys)
     if keys.empty?
       if @name == :root
