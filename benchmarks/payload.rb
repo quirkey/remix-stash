@@ -9,53 +9,55 @@ med_value = 'b' * 2_000
 small_value = 'c' * 100
 tiny_value = 'd'
 
-Benchmark.bm do |b|
+KEY = 'abc123xyz'
+
+Benchmark.bmbm do |b|
   b.report('100k stash') do
     LARGE_NUMBER.times {
-      stash.write('x', large_value)
-      stash.read('x')
+      stash.write(KEY, large_value)
+      stash.read(KEY)
     }
   end
   b.report('100k cache') do
     LARGE_NUMBER.times {
-      Cache.set('x', large_value, 0, true)
-      Cache.get('x', true)
+      Cache.set(KEY, large_value, 0, true)
+      Cache.get(KEY, true)
     }
   end
   b.report('2k stash') do
     LARGE_NUMBER.times {
-      stash.write('x', med_value)
-      stash.read('x')
+      stash.write(KEY, med_value)
+      stash.read(KEY)
     }
   end
   b.report('2k cache') do
     LARGE_NUMBER.times {
-      Cache.set('x', med_value, 0, true)
-      Cache.get('x', true)
+      Cache.set(KEY, med_value, 0, true)
+      Cache.get(KEY, true)
     }
   end
   b.report('100b stash') do
     LARGE_NUMBER.times {
-      stash.write('x', small_value)
-      stash.read('x')
+      stash.write(KEY, small_value)
+      stash.read(KEY)
     }
   end
   b.report('100b cache') do
     LARGE_NUMBER.times {
-      Cache.set('x', small_value, 0, true)
-      Cache.get('x', true)
+      Cache.set(KEY, small_value, 0, true)
+      Cache.get(KEY, true)
     }
   end
   b.report('1b stash') do
     LARGE_NUMBER.times {
-      stash.write('x', tiny_value)
-      stash.read('x')
+      stash.write(KEY, tiny_value)
+      stash.read(KEY)
     }
   end
   b.report('1b cache') do
     LARGE_NUMBER.times {
-      Cache.set('x', tiny_value, 0, true)
-      Cache.get('x', true)
+      Cache.set(KEY, tiny_value, 0, true)
+      Cache.get(KEY, true)
     }
   end
 end
