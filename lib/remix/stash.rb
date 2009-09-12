@@ -96,12 +96,14 @@ class Stash
     opts = default_opts(keys)
     key = canonical_key(keys)
     cluster.select(key) {|io|
-      value = Protocol.get_value(io, key)
-      unless value
+      value = Protocol.get(io, key)
+      if value
+        Marshal.load(value)
+      else
         value = yield(*keys)
-        Protocol.set_value(io, key, value, opts[:ttl])
+        Protocol.set(io, key, dump_value(value), opts[:ttl])
+        value
       end
-      value
     }
   end
 
@@ -119,7 +121,7 @@ class Stash
 
   def get(*keys)
     key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.get_value(io, key)}
+    cluster.select(key) {|io| load_value(Protocol.get(io, key))}
   end
   alias [] get
 
@@ -147,7 +149,7 @@ class Stash
     opts = default_opts(keys)
     value = keys.pop
     key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.set_value(io, key, value, opts[:ttl])}
+    cluster.select(key) {|io| Protocol.set(io, key, dump_value(value), opts[:ttl])}
   end
   alias []= set
 
@@ -183,6 +185,10 @@ private
     params.last.is_a?(Hash) ? default.merge(params.pop) : default
   end
 
+  def dump_value(value)
+    Marshal.dump(value)
+  end
+
   EMPTY_SCOPE = ''
   def implicit_scope
     if @scope
@@ -191,6 +197,10 @@ private
     else
       EMPTY_SCOPE
     end
+  end
+
+  def load_value(data)
+    Marshal.load(data) if data
   end
 
   def vector

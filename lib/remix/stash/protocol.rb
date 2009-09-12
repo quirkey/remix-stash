@@ -93,10 +93,6 @@ module Stash::Protocol
     resp[:status] == NO_ERROR ? parse_get(resp[:body])[:value] : nil
   end
 
-  def get_value(io, key)
-    load_ruby_value(get(io, key))
-  end
-
   INCR_PACKET = HEADER_FORMAT + 'NNQNa*'
   def incr(io, key, step)
     low, high = split64(step)
@@ -116,17 +112,7 @@ module Stash::Protocol
     resp[:status] == NO_ERROR
   end
 
-  def set_value(io, key, value, ttl = 0)
-    set(io, key, Marshal.dump(value), ttl)
-  end
-
 private
-
-  def load_ruby_value(data)
-    return unless data
-    # TODO: Catch errors and try to fix them
-    Marshal.load(data)
-  end
 
   def parse_get(body)
     extra, value = body.unpack('Na*')
