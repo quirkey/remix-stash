@@ -1,20 +1,25 @@
 require 'benchmark'
 require File.dirname(__FILE__) + '/../harness'
-require File.dirname(__FILE__) + '/../harness_cache'
 
-LARGE_NUMBER = 200_000
+LARGE_NUMBER = 20_000
 
 Benchmark.bmbm do |b|
-  b.report('get/set stash') do
+  b.report('get/set remix-stash') do
     LARGE_NUMBER.times {|n|
       stash[:abcxyz123] = n
       stash[:abcxyz123]
     }
   end
-  b.report('get/set cache') do
+  b.report('get/set memcached') do
     LARGE_NUMBER.times {|n|
-      Cache.set('abcxyz123', n)
-      Cache.get('abcxyz123')
+      CCache.set('abcxyz123', n)
+      CCache.get('abcxyz123')
+    }
+  end
+  b.report('get/set memcache-client') do
+    LARGE_NUMBER.times {|n|
+      RCache.set('abcxyz123', n)
+      RCache.get('abcxyz123')
     }
   end
 end

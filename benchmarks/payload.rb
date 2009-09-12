@@ -1,6 +1,5 @@
 require 'benchmark'
 require File.dirname(__FILE__) + '/../harness'
-require File.dirname(__FILE__) + '/../harness_cache'
 
 LARGE_NUMBER = 20_000
 
@@ -13,28 +12,40 @@ tiny_value = 'e'
 KEY = 'abc123xyz'
 
 Benchmark.bmbm do |b|
-  b.report('100k stash') do
+  b.report('100k remix-stash') do
     LARGE_NUMBER.times {
       stash.write(KEY, huge_value)
       stash.read(KEY)
     }
   end
-  b.report('100k cache') do
+  b.report('100k memcached') do
     LARGE_NUMBER.times {
-      Cache.set(KEY, huge_value, 0, true)
-      Cache.get(KEY, true)
+      CCache.set(KEY, huge_value, 0, true)
+      CCache.get(KEY, true)
     }
   end
-  b.report('20k stash') do
+  b.report('100k memcache-client') do
+    LARGE_NUMBER.times {
+      RCache.set(KEY, huge_value, 0, true)
+      RCache.get(KEY, true)
+    }
+  end
+  b.report('20k remix-stash') do
     LARGE_NUMBER.times {
       stash.write(KEY, large_value)
       stash.read(KEY)
     }
   end
-  b.report('20k cache') do
+  b.report('20k memcached') do
     LARGE_NUMBER.times {
-      Cache.set(KEY, large_value, 0, true)
-      Cache.get(KEY, true)
+      CCache.set(KEY, large_value, 0, true)
+      CCache.get(KEY, true)
+    }
+  end
+  b.report('20k memcache-client') do
+    LARGE_NUMBER.times {
+      RCache.set(KEY, large_value, 0, true)
+      RCache.get(KEY, true)
     }
   end
   b.report('2k stash') do
@@ -43,10 +54,16 @@ Benchmark.bmbm do |b|
       stash.read(KEY)
     }
   end
-  b.report('2k cache') do
+  b.report('2k memcached') do
     LARGE_NUMBER.times {
-      Cache.set(KEY, med_value, 0, true)
-      Cache.get(KEY, true)
+      CCache.set(KEY, med_value, 0, true)
+      CCache.get(KEY, true)
+    }
+  end
+  b.report('2k memcache-client') do
+    LARGE_NUMBER.times {
+      RCache.set(KEY, med_value, 0, true)
+      RCache.get(KEY, true)
     }
   end
   b.report('100b stash') do
@@ -55,10 +72,16 @@ Benchmark.bmbm do |b|
       stash.read(KEY)
     }
   end
-  b.report('100b cache') do
+  b.report('100b memcached') do
     LARGE_NUMBER.times {
-      Cache.set(KEY, small_value, 0, true)
-      Cache.get(KEY, true)
+      CCache.set(KEY, small_value, 0, true)
+      CCache.get(KEY, true)
+    }
+  end
+  b.report('100b memcache-client') do
+    LARGE_NUMBER.times {
+      RCache.set(KEY, small_value, 0, true)
+      RCache.get(KEY, true)
     }
   end
   b.report('1b stash') do
@@ -67,10 +90,16 @@ Benchmark.bmbm do |b|
       stash.read(KEY)
     }
   end
-  b.report('1b cache') do
+  b.report('1b memcached') do
     LARGE_NUMBER.times {
-      Cache.set(KEY, tiny_value, 0, true)
-      Cache.get(KEY, true)
+      CCache.set(KEY, tiny_value, 0, true)
+      CCache.get(KEY, true)
+    }
+  end
+  b.report('1b memcache-client') do
+    LARGE_NUMBER.times {
+      RCache.set(KEY, tiny_value, 0, true)
+      RCache.get(KEY, true)
     }
   end
 end
