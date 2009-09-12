@@ -10,16 +10,20 @@ Benchmark.bmbm do |b|
       stash[:abcxyz123]
     }
   end
-  b.report('get/set memcached') do
-    LARGE_NUMBER.times {|n|
-      CCache.set('abcxyz123', n)
-      CCache.get('abcxyz123')
-    }
+  if defined?(CCache)
+    b.report('get/set memcached') do
+      LARGE_NUMBER.times {|n|
+        CCache.set('abcxyz123', n)
+        CCache.get('abcxyz123')
+      }
+    end
   end
-  b.report('get/set memcache-client') do
-    LARGE_NUMBER.times {|n|
-      RCache.set('abcxyz123', n)
-      RCache.get('abcxyz123')
-    }
+  if defined?(RCache)
+    b.report('get/set memcache-client') do
+      LARGE_NUMBER.times {|n|
+        RCache.set('abcxyz123', n)
+        RCache.get('abcxyz123')
+      }
+    end
   end
 end

@@ -1,11 +1,19 @@
-$LOAD_PATH << File.dirname(__FILE__) + '/lib'
+require 'rubygems'
+$LOAD_PATH.unshift File.dirname(__FILE__) + '/lib'
 require 'remix/stash'
 
-require 'rubygems'
-require 'memcached'
-require 'memcache'
+begin
+  require 'memcached'
+  CCache = Memcached.new('localhost:11211')
+rescue
+  puts "memcached not found (skipping)"
+end
 
-CCache = Memcached.new('localhost:11211')
-RCache = MemCache.new('localhost:11211')
+begin
+  require 'memcache'
+  RCache = MemCache.new('localhost:11211')
+rescue
+  puts "memcached-client not found (skipping)"
+end
 
 stash.clear
