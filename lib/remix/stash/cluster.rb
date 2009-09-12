@@ -17,7 +17,15 @@ class Stash::Cluster
 
   def each
     @hosts.each do |h|
-      yield(host_to_io(*h))
+      begin
+        io = host_to_io(*h)
+        break yield(io)
+      rescue Errno::EPIPE, Errno::ECONNRESET
+        io.close
+        retry
+      rescue Stash::ProtocolError, Errno::EAGAIN
+        next
+      end
     end
   end
 
@@ -34,8 +42,12 @@ class Stash::Cluster
     end
     count.times do |try|
       begin
-        break yield(host_to_io(*@hosts[(hash + try) % count]))
-      rescue Stash::ProtocolError
+        io = host_to_io(*@hosts[(hash + try) % count])
+        break yield(io)
+      rescue Errno::EPIPE, Errno::ECONNRESET
+        io.close
+        retry
+      rescue Stash::ProtocolError, Errno::EAGAIN
         next
       end
       raise Stash::ClusterError,
@@ -68,7 +80,10 @@ private
   end
 
   def host_to_io(key, host, port)
-    @@connections[key] ||= connect(host, port)
+    socket = @@connections[key] ||= connect(host, port)
+    return socket unless socket.closed?
+    @@connections.delete(key)
+    host_to_io(key, host, port)
   end
 
 end
