@@ -1,8 +1,8 @@
-module Stash::Extension
+module Remix::Stash::Extension
   extend self
 
   def stash(name = :root)
-    Stash.new(name)
+    Remix::Stash.new(name)
   end
 
 end

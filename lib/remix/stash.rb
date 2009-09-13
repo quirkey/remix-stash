@@ -1,4 +1,6 @@
-class Stash
+module Remix; end
+
+class Remix::Stash
   require 'remix/stash/extension'
   require 'remix/stash/cluster'
   require 'remix/stash/protocol'
@@ -226,4 +228,4 @@ private
 
 end
 
-class Object; include Stash::Extension end
+class Object; include Remix::Stash::Extension end

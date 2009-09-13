@@ -1,4 +1,4 @@
-module Stash::Protocol
+module Remix::Stash::Protocol
   extend self
 
   HEADER_FORMAT = "CCnCCnNNQ"

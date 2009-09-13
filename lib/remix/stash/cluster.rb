@@ -1,7 +1,7 @@
 require 'socket'
 require 'digest/md5'
 
-class Stash::Cluster
+class Remix::Stash::Cluster
   include Socket::Constants
 
   @@connections = {}
