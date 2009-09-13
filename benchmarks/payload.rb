@@ -18,7 +18,7 @@ Benchmark.bmbm do |b|
       stash.read(KEY)
     }
   end
-  if defined?(CCcache)
+  if defined?(CCache)
     b.report('100k memcached') do
       LARGE_NUMBER.times {
         CCache.set(KEY, huge_value, 0, true)
