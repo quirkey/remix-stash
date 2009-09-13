@@ -22,4 +22,16 @@ class ExtensionSpec < Spec
 
   end
 
+  context 'modules' do
+
+    should 'be mixed into Object' do
+      assert Object.respond_to?(:stash)
+    end
+
+    should 'be mixed into Remix' do
+      assert Remix.respond_to?(:stash)
+    end
+
+  end
+
 end
