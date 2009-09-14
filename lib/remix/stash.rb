@@ -206,8 +206,8 @@ private
   end
 
   def vector
-    return 'static' if @name == :root
-    return @vector.to_s if @vector && coherency != :dynamic
+    return if @name == :root
+    return @vector if @vector && coherency != :dynamic
     vk = vector_key
     cluster.select(vk) do |io|
       @vector = Protocol.get(io, vk)
