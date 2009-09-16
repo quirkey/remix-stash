@@ -183,7 +183,7 @@ private
     default[:coherency]
   end
 
-  def default_opts(params)
+  def default_opts(params = {})
     params.last.is_a?(Hash) ? default.merge(params.pop) : default
   end
 
@@ -203,6 +203,10 @@ private
 
   def load_value(data)
     Marshal.load(data) if data
+  rescue TypeError, ArgumentError
+    logger = default_opts[:logger]
+    logger && logger.error("[stash] Unable to load marshal stream: #{data.inspect}")
+    nil
   end
 
   def vector
