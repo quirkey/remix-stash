@@ -38,17 +38,18 @@ class Remix::Stash
   def add(*keys)
     opts = default_opts(keys)
     value = keys.pop
-    key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.add(io, key, value, opts[:ttl])}
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| Protocol.add(io, key, value, opts[:ttl])}
   end
 
   def clear(*keys)
+    opts = default_opts(keys)
     if keys.empty?
       if @name == :root
-        cluster.each {|io| Protocol.flush(io)}
+        cluster(opts).each {|io| Protocol.flush(io)}
       else
         vk = vector_key
-        cluster.select(vk) {|io|
+        cluster(opts).select(vk) {|io|
           unless Protocol.incr(io, vk, 1)
             Protocol.add(io, vk, '0')
             Protocol.incr(io, vk, 1)
@@ -58,8 +59,8 @@ class Remix::Stash
       cycle
     else
       # remove a specific key
-      key = canonical_key(keys)
-      cluster.select(key) {|io| Protocol.delete(io, key)}
+      key = canonical_key(keys, opts)
+      cluster(opts).select(key) {|io| Protocol.delete(io, key)}
     end
   end
 
@@ -72,9 +73,10 @@ class Remix::Stash
   end
 
   def decr(*keys)
+    opts = default_opts(keys)
     step = keys.pop
-    key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.decr(io, key, step)}
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| Protocol.decr(io, key, step)}
   end
 
   def default(opts = {})
@@ -90,14 +92,15 @@ class Remix::Stash
   end
 
   def delete(*keys)
-    key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.delete(io, key)}
+    opts = default_opts(keys)
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| Protocol.delete(io, key)}
   end
 
   def eval(*keys)
     opts = default_opts(keys)
-    key = canonical_key(keys)
-    cluster.select(key) {|io|
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io|
       value = Protocol.get(io, key)
       if value
         Marshal.load(value)
@@ -110,8 +113,9 @@ class Remix::Stash
   end
 
   def gate(*keys)
-    key = canonical_key(keys)
-    cluster.select(key) {|io|
+    opts = default_opts(keys)
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io|
       if Protocol.get(io, key)
         yield(*keys)
         true
@@ -122,20 +126,23 @@ class Remix::Stash
   end
 
   def get(*keys)
-    key = canonical_key(keys)
-    cluster.select(key) {|io| load_value(Protocol.get(io, key))}
+    opts = default_opts(keys)
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| load_value(Protocol.get(io, key))}
   end
   alias [] get
 
   def incr(*keys)
+    opts = default_opts(keys)
     step = keys.pop
-    key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.incr(io, key, step)}
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| Protocol.incr(io, key, step)}
   end
 
   def read(*keys)
-    key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.get(io, key)}
+    opts = default_opts(keys)
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| Protocol.get(io, key)}
   end
 
   def release
@@ -150,8 +157,8 @@ class Remix::Stash
   def set(*keys)
     opts = default_opts(keys)
     value = keys.pop
-    key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.set(io, key, dump_value(value), opts[:ttl])}
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| Protocol.set(io, key, dump_value(value), opts[:ttl])}
   end
   alias []= set
 
@@ -164,19 +171,19 @@ class Remix::Stash
   def write(*keys)
     opts = default_opts(keys)
     value = keys.pop
-    key = canonical_key(keys)
-    cluster.select(key) {|io| Protocol.set(io, key, value, opts[:ttl])}
+    key = canonical_key(keys, opts)
+    cluster(opts).select(key) {|io| Protocol.set(io, key, value, opts[:ttl])}
   end
 
 private
 
   KEY_SEPARATOR = '/'
-  def canonical_key(keys)
-    "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector}"
+  def canonical_key(keys, opts = default_opts)
+    "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector(opts)}"
   end
 
-  def cluster
-    @@clusters[:default]
+  def cluster(opts = {})
+    @@clusters[opts[:cluster] || :default]
   end
 
   def coherency
@@ -209,11 +216,11 @@ private
     nil
   end
 
-  def vector
+  def vector(opts)
     return if @name == :root
     return @vector if @vector && coherency != :dynamic
     vk = vector_key
-    cluster.select(vk) do |io|
+    cluster(opts).select(vk) do |io|
       @vector = Protocol.get(io, vk)
       unless @vector
         Protocol.add(io, vk, '0')
