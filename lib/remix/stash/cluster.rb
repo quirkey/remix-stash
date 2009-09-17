@@ -60,9 +60,9 @@ private
   if RUBY_PLATFORM =~ /java/
 
     def connect(host, port)
-      # We currently don't support timeouts in JRuby since the socket API is
-      # incomplete.
-      TCPSocket.new(host, port)
+      socket = TCPSocket.new(host, port)
+      set_timeout(socket)
+      socket
     end
 
   else
@@ -70,9 +70,7 @@ private
     def connect(host, port)
       address = Socket.getaddrinfo(host, nil).first
       socket = Socket.new(Socket.const_get(address[0]), SOCK_STREAM, 0)
-      timeout = [2,0].pack('l_2') # 2 seconds
-      socket.setsockopt(SOL_SOCKET, SO_SNDTIMEO, timeout)
-      socket.setsockopt(SOL_SOCKET, SO_RCVTIMEO, timeout)
+      set_timeout(socket)
       socket.connect(Socket.pack_sockaddr_in(port, address[3]))
       socket
     end
@@ -84,6 +82,12 @@ private
     return socket unless socket.closed?
     @@connections.delete(key)
     host_to_io(key, host, port)
+  end
+
+  def set_timeout(socket)
+    timeout = [2,0].pack('l_2') # 2 seconds
+    socket.setsockopt(SOL_SOCKET, SO_SNDTIMEO, timeout)
+    socket.setsockopt(SOL_SOCKET, SO_RCVTIMEO, timeout)
   end
 
 end
