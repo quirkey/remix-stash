@@ -23,7 +23,7 @@ class Remix::Stash::Cluster
       rescue Errno::EPIPE, Errno::ECONNRESET
         io.close
         retry
-      rescue Stash::ProtocolError, Errno::EAGAIN
+      rescue Remix::Stash::ProtocolError, Errno::EAGAIN
         next
       end
     end
@@ -47,10 +47,10 @@ class Remix::Stash::Cluster
       rescue Errno::EPIPE, Errno::ECONNRESET
         io.close
         retry
-      rescue Stash::ProtocolError, Errno::EAGAIN
+      rescue Remix::Stash::ProtocolError, Errno::EAGAIN
         next
       end
-      raise Stash::ClusterError,
+      raise Remix::Stash::ClusterError,
         "Unable to find suitable host to communicate with for #{key.inspect} (MD5-32=#{hash})"
     end
   end
