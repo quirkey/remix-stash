@@ -103,6 +103,12 @@ class StashSpec < Spec
       assert_equal [['default', 'default', 11211]], Stash.cluster(:default_port).hosts
     end
 
+    should 'allow Cluster object to be passed in' do
+      cluster = Stash::Cluster.new(%w[localhost:11211])
+      Stash.define_cluster(:object => cluster)
+      assert_equal cluster, Stash.cluster(:object)
+    end
+
   end
 
   context '#add' do

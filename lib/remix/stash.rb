@@ -21,7 +21,7 @@ class Remix::Stash
 
   def self.define_cluster(clusters)
     clusters.each do |k,v|
-      @@clusters[k] = Cluster.new(v)
+      @@clusters[k] = Cluster === v ? v : Cluster.new(v)
     end
   end
 
