@@ -57,24 +57,10 @@ class Remix::Stash::Cluster
 
 private
 
-  if RUBY_PLATFORM =~ /java/
-
-    def connect(host, port)
-      socket = TCPSocket.new(host, port)
-      set_timeout(socket)
-      socket
-    end
-
-  else
-
-    def connect(host, port)
-      address = Socket.getaddrinfo(host, nil).first
-      socket = Socket.new(Socket.const_get(address[0]), SOCK_STREAM, 0)
-      set_timeout(socket)
-      socket.connect(Socket.pack_sockaddr_in(port, address[3]))
-      socket
-    end
-
+  def connect(host, port)
+    socket = TCPSocket.new(host, port)
+    set_timeout(socket, 2)
+    socket
   end
 
   def host_to_io(key, host, port)
@@ -84,8 +70,8 @@ private
     host_to_io(key, host, port)
   end
 
-  def set_timeout(socket)
-    timeout = [2,0].pack('l_2') # 2 seconds
+  def set_timeout(socket, seconds)
+    timeout = [seconds, 0].pack('l_2') # 2 seconds
     socket.setsockopt(SOL_SOCKET, SO_SNDTIMEO, timeout)
     socket.setsockopt(SOL_SOCKET, SO_RCVTIMEO, timeout)
   end
