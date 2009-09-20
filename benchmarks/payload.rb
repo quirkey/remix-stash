@@ -21,8 +21,8 @@ Benchmark.bmbm do |b|
   if defined?(CCache)
     b.report('100k memcached') do
       LARGE_NUMBER.times {
-        CCache.set(KEY, huge_value, 0, true)
-        CCache.get(KEY, true)
+        CCache.set(KEY, huge_value, 0, false)
+        CCache.get(KEY, false)
       }
     end
   end
@@ -43,8 +43,8 @@ Benchmark.bmbm do |b|
   if defined?(CCache)
     b.report('20k memcached') do
       LARGE_NUMBER.times {
-        CCache.set(KEY, large_value, 0, true)
-        CCache.get(KEY, true)
+        CCache.set(KEY, large_value, 0, false)
+        CCache.get(KEY, false)
       }
     end
   end
@@ -65,8 +65,8 @@ Benchmark.bmbm do |b|
   if defined?(CCache)
     b.report('2k memcached') do
       LARGE_NUMBER.times {
-        CCache.set(KEY, med_value, 0, true)
-        CCache.get(KEY, true)
+        CCache.set(KEY, med_value, 0, false)
+        CCache.get(KEY, false)
       }
     end
   end
@@ -87,8 +87,8 @@ Benchmark.bmbm do |b|
   if defined?(CCache)
     b.report('100b memcached') do
       LARGE_NUMBER.times {
-        CCache.set(KEY, small_value, 0, true)
-        CCache.get(KEY, true)
+        CCache.set(KEY, small_value, 0, false)
+        CCache.get(KEY, false)
       }
     end
   end
@@ -109,8 +109,8 @@ Benchmark.bmbm do |b|
   if defined?(CCache)
     b.report('1b memcached') do
       LARGE_NUMBER.times {
-        CCache.set(KEY, tiny_value, 0, true)
-        CCache.get(KEY, true)
+        CCache.set(KEY, tiny_value, 0, false)
+        CCache.get(KEY, false)
       }
     end
   end
