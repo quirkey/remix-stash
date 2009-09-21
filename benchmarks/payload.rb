@@ -56,7 +56,7 @@ Benchmark.bmbm do |b|
       }
     end
   end
-  b.report('2k stash') do
+  b.report('2k remix-stash') do
     LARGE_NUMBER.times {
       stash.write(KEY, med_value)
       stash.read(KEY)
@@ -78,7 +78,7 @@ Benchmark.bmbm do |b|
       }
     end
   end
-  b.report('100b stash') do
+  b.report('100b remix-stash') do
     LARGE_NUMBER.times {
       stash.write(KEY, small_value)
       stash.read(KEY)
@@ -100,7 +100,7 @@ Benchmark.bmbm do |b|
       }
     end
   end
-  b.report('1b stash') do
+  b.report('1b remix-stash') do
     LARGE_NUMBER.times {
       stash.write(KEY, tiny_value)
       stash.read(KEY)
