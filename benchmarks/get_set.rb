@@ -1,7 +1,7 @@
 require 'benchmark'
 require File.dirname(__FILE__) + '/../harness'
 
-LARGE_NUMBER = 20_000
+LARGE_NUMBER = 50_000
 
 Benchmark.bmbm do |b|
   b.report('get/set remix-stash') do
