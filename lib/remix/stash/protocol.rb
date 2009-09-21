@@ -86,11 +86,12 @@ module Remix::Stash::Protocol
   end
 
   GET_PACKET = HEADER_FORMAT + 'a*'
+  GET_BODY = 4..-1
   def get(io, key)
     header = [REQUEST, GET, key.size, 0, 0, 0, key.size, 0, 0, key].pack(GET_PACKET)
     io.write(header)
     resp = read_resp(io)
-    resp[:status] == NO_ERROR ? parse_get(resp[:body])[:value] : nil
+    resp[:status] == NO_ERROR ? resp[:body][GET_BODY] : nil
   end
 
   INCR_PACKET = HEADER_FORMAT + 'NNQNa*'
@@ -114,25 +115,18 @@ module Remix::Stash::Protocol
 
 private
 
-  def parse_get(body)
-    extra, value = body.unpack('Na*')
-    {:extra => extra, :value => value}
-  end
-
+  COUNTER_SPLIT = 'NN'
   def parse_counter(body)
-    a, b = body.unpack('NN')
+    a, b = body.unpack(COUNTER_SPLIT)
     b | (a << 32)
   end
 
+  RESP_HEADER = '@6nN'
   def read_resp(io)
-    magic, opcode, key_length,
-    extra, type, status,
-    body_length, opaque, cas = *io.read(24).unpack(HEADER_FORMAT)
-    resp = { :magic => magic, :opcode => opcode, :key_length => key_length,
-      :extra => extra, :type => type, :status => status,
-      :body_length => body_length, :opaque => opaque, :cas => cas }
-    resp[:body] = io.read(body_length) if body_length > 0
-    resp
+    status, body_length = *io.read(24).unpack(RESP_HEADER)
+    body_length.zero? ?
+      {:status => status} :
+      {:status => status, :body => io.read(body_length)}
   end
 
   def split64(n)
