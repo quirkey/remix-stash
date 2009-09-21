@@ -123,7 +123,10 @@ private
 
   RESP_HEADER = '@6nN'
   def read_resp(io)
-    status, body_length = *io.read(24).unpack(RESP_HEADER)
+    header = io.read(24)
+    header or raise Remix::Stash::ProtocolError,
+      "No data in response header"
+    status, body_length = *header.unpack(RESP_HEADER)
     body_length.zero? ?
       {:status => status} :
       {:status => status, :body => io.read(body_length)}

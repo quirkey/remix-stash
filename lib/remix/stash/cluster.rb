@@ -20,10 +20,10 @@ class Remix::Stash::Cluster
       begin
         io = host_to_io(*h)
         break yield(io)
-      rescue Errno::EPIPE, Errno::ECONNRESET
+      rescue Errno::EPIPE, Errno::ECONNRESET, Remix::Stash::ProtocolError
         io.close
         retry
-      rescue Remix::Stash::ProtocolError, Errno::EAGAIN
+      rescue Errno::EAGAIN, Errno::ECONNREFUSED
         next
       end
     end
@@ -44,15 +44,15 @@ class Remix::Stash::Cluster
       begin
         io = host_to_io(*@hosts[(hash + try) % count])
         return yield(io)
-      rescue Errno::EPIPE, Errno::ECONNRESET
+      rescue Errno::EPIPE, Errno::ECONNRESET, Remix::Stash::ProtocolError
         io.close
         retry
-      rescue Remix::Stash::ProtocolError, Errno::EAGAIN
+      rescue Errno::EAGAIN, Errno::ECONNREFUSED
         next
       end
-      raise Remix::Stash::ClusterError,
-        "Unable to find suitable host to communicate with for #{key.inspect} (MD5-32=#{hash})"
     end
+    raise Remix::Stash::ClusterError,
+      "Unable to find suitable host to communicate with for #{key.inspect} (MD5-32=#{hash})"
   end
 
 private
