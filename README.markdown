@@ -10,7 +10,6 @@ It does require memcached 1.4+ but you should be running that anyway (if you are
 
 # TODO
 
-* optimize option merging with cache
 * implement the rest of the memcached 1.4 binary API (replace, append, prepend)
 * allow swappable cluster types for consistent hashing, ketama, etc...
 * failsafe marshal load

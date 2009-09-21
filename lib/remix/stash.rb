@@ -32,7 +32,12 @@ class Remix::Stash
   def initialize(name)
     @name = name
     @scope = nil
-    @opts = name == :root ? {:coherency => :action, :ttl => 0, :cluster => :default} : {}
+    if name == :root
+      @local = @opts = {:coherency => :action, :ttl => 0, :cluster => :default}
+    else
+      @local = {}
+      @opts = stash.default
+    end
   end
 
   def add(*keys)
@@ -81,18 +86,19 @@ class Remix::Stash
 
   def default(opts = nil)
     if opts
-      base = @opts.merge!(opts)
       if opts.has_key? :coherency
         [:dynamic, :action, :transaction].include?(opts[:coherency]) or raise ArgumentError,
           "Invalid coherency setting used (#{opts[:coherency].inspect})"
       end
-    else
-      base = @opts
+      @local.merge!(opts)
+      @opts.merge!(opts)
+      if @name == :root
+        @@instances.each do |name, stash|
+          stash.update_options unless name == :root
+        end
+      end
     end
-    root = @@instances[:root] || Stash.new(:root)
-    self == root ?
-      base :
-      root.default.merge(base)
+    @opts
   end
 
   def delete(*keys)
@@ -177,6 +183,12 @@ class Remix::Stash
     value = keys.pop
     key = canonical_key(keys, opts)
     cluster(opts).select(key) {|io| Protocol.set(io, key, value, opts[:ttl])}
+  end
+
+protected
+
+  def update_options
+    @opts = stash.default.merge(@local)
   end
 
 private
