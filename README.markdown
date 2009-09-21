@@ -15,6 +15,7 @@ It does require memcached 1.4+ but you should be running that anyway (if you are
 * failsafe marshal load
 * support non-marshal value dumps configured per stash
 * support multi vector sets
+* thread safe cluster
 * add block form
 * quiet/multi command forms (will require a protocol refactoring most likely)
 * server pings
