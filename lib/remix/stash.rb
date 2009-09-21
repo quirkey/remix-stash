@@ -182,16 +182,19 @@ class Remix::Stash
 private
 
   KEY_SEPARATOR = '/'
-  def canonical_key(keys, opts = default_opts)
-    "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector(opts)}"
+  def canonical_key(keys, opts)
+    v = vector(opts)
+    if @scope
+      "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector(opts)}"
+    elsif v
+      keys.join(KEY_SEPARATOR) << v
+    else
+      keys.join(KEY_SEPARATOR)
+    end
   end
 
   def cluster(opts = {})
     @@clusters[opts[:cluster]]
-  end
-
-  def coherency
-    default[:coherency]
   end
 
   def default_opts(params)
@@ -202,14 +205,8 @@ private
     Marshal.dump(value)
   end
 
-  EMPTY_SCOPE = ''
   def implicit_scope
-    if @scope
-      scope = @scope.call(self)
-      scope ? "#{scope}/" : EMPTY_SCOPE
-    else
-      EMPTY_SCOPE
-    end
+    @scope.call(self) if @scope
   end
 
   def load_value(data)
@@ -222,7 +219,7 @@ private
 
   def vector(opts)
     return if @name == :root
-    return @vector if @vector && coherency != :dynamic
+    return @vector if @vector && opts[:coherency] != :dynamic
     vk = vector_key
     cluster(opts).select(vk) do |io|
       @vector = Protocol.get(io, vk)

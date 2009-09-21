@@ -10,6 +10,12 @@ Benchmark.bmbm do |b|
       stash[:abcxyz123]
     }
   end
+  b.report('get/set remix-stash named') do
+    LARGE_NUMBER.times {|n|
+      stash(:stuff)[:abcxyz123] = n
+      stash(:stuff)[:abcxyz123]
+    }
+  end
   if defined?(CCache)
     b.report('get/set memcached') do
       LARGE_NUMBER.times {|n|

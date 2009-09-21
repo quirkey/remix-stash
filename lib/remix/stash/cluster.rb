@@ -43,7 +43,7 @@ class Remix::Stash::Cluster
     count.times do |try|
       begin
         io = host_to_io(*@hosts[(hash + try) % count])
-        break yield(io)
+        return yield(io)
       rescue Errno::EPIPE, Errno::ECONNRESET
         io.close
         retry
