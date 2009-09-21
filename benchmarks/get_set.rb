@@ -19,8 +19,8 @@ Benchmark.bmbm do |b|
   if defined?(CCache)
     b.report('get/set memcached') do
       LARGE_NUMBER.times {|n|
-        CCache.set('abcxyz123', n)
-        CCache.get('abcxyz123')
+        CCache.set('abcxyz123', n, 0 , true)
+        CCache.get('abcxyz123', true)
       }
     end
   end
