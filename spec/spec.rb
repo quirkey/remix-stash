@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 if __FILE__ == $0
   base = File.dirname(__FILE__)
   Dir[base + '/*_spec.rb'].each {|f| require f}
