@@ -1,12 +1,12 @@
 # Quick & Dirty Specs
 
-New API! I've rethought a lot of the API and this comes with a lot of new capabilities. More work is being done on making it as expressive as possible without terrible overhead. This includes vectorized keys which allow emulation of partial cache clearing as well as nice shortcuts like eval and gate for expressions. Options, clusters, and implicit scope are easy to manage on a stash-by-stash basis. Keys are also easy to pass in as it will create composite keys from whatever you pass in (as long as it has to_s) so no more ugly string interpolation all over the place.
+New API that doesn't actually suck! I've rethought a lot of the API and this comes with a lot of new capabilities. More work is being done on making it as expressive as possible without terrible overhead. This includes vectorized keys which allow emulation of partial cache clearing as well as nice shortcuts like eval and gate for expressions. Options, clusters, and implicit scope are easy to manage on a stash-by-stash basis. Keys are also easy to pass in as it will create composite keys from whatever you pass in (as long as it has to_s) so no more ugly string interpolation all over the place.
 
 It's fast (faster than memcache-client). It's simple (pure ruby and only a few hundred lines). It's tested (shoulda). Of course, because it's pure ruby it will run almost anywhere as well unlike many other clients.
 
 It does require memcached 1.4+ but you should be running that anyway (if you aren't, upgrade already).
 
-Take a look and let me know what you think!
+Take a look at the examples and let me know what you think!
 
 # Installation
 
@@ -24,7 +24,7 @@ Right now remix-stash is designed to be run as a gem. I've published it to both 
 
 This project is tested with shoulda (install via the thoughtbot-shoulda gem on github) and takes the philosophy that fewer moving parts is better. So to avoid complex runners just run `spec/spec.rb` or the spec you are interested in directly. In order for the specs to function, you should have memcached 1.4+ running locally on port 11211.
 
-# TODO
+# Future Work
 
 * implement the rest of the memcached 1.4 binary API (replace, append, prepend)
 * allow swappable cluster types for consistent hashing, ketama, etc...
