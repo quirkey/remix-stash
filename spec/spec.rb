@@ -8,6 +8,10 @@ else
   require 'test/unit'
   require 'shoulda'
 
+  load File.dirname(__FILE__) + '/support/rails/config/environment.rb'
+  ENV['MEMCACHED_SERVERS'] = 'localhost:11211'
+  ENV['MEMCACHED_NAMESPACE'] = 'spec'
+
   $LOAD_PATH << File.dirname(__FILE__) + '/../lib'
   require 'remix/stash'
 

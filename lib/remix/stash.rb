@@ -263,3 +263,5 @@ end
 
 class Object; include Remix::Stash::Extension end
 module Remix; extend Remix::Stash::Extension end
+
+require 'remix/stash/auto_detection'
