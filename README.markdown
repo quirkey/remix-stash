@@ -26,7 +26,6 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 
 # TODO
 
-* namespacing
 * implement the rest of the memcached 1.4 binary API (replace, append, prepend)
 * allow swappable cluster types for consistent hashing, ketama, etc...
 * failsafe marshal load

@@ -196,13 +196,15 @@ private
   KEY_SEPARATOR = '/'
   def canonical_key(keys, opts)
     v = vector(opts)
-    if @scope
-      "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector(opts)}"
-    elsif v
-      keys.join(KEY_SEPARATOR) << v
-    else
-      keys.join(KEY_SEPARATOR)
-    end
+    namespace = opts[:namespace].to_s
+    namespace +
+      if @scope
+        "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector(opts)}"
+      elsif v
+        keys.join(KEY_SEPARATOR) << v
+      else
+        keys.join(KEY_SEPARATOR)
+      end
   end
 
   def cluster(opts = {})

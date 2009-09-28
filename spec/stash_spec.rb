@@ -72,6 +72,17 @@ class StashSpec < Spec
 
   end
 
+  context 'namespacing' do
+
+    should 'allow unique namespaces to be used throughout the keyspace' do
+      stash.default(:namespace => 'one')
+      stash[:a] = 42
+      stash.default(:namespace => 'two')
+      assert_nil stash[:a]
+    end
+
+  end
+
   context '.cycle_action' do
 
     setup do
