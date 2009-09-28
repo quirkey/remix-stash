@@ -225,7 +225,14 @@ private
 
   def load_value(data)
     Marshal.load(data) if data
-  rescue TypeError, ArgumentError
+  rescue TypeError, ArgumentError => e
+    if e.message =~ /undefined class\/module (.*)/
+      retry if begin
+        $1.split('::').inject(Object) {|m,x|
+          m.const_get(x)}
+      rescue Exception
+      end
+    end
     logger = default_opts[:logger]
     logger && logger.error("[stash] Unable to load marshal stream: #{data.inspect}")
     nil

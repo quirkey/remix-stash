@@ -28,7 +28,6 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 
 * implement the rest of the memcached 1.4 binary API (replace, append, prepend)
 * allow swappable cluster types for consistent hashing, ketama, etc...
-* failsafe marshal load
 * support non-marshal value dumps configured per stash
 * support multi vector sets
 * thread safe cluster

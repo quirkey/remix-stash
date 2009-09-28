@@ -1,0 +1,2 @@
+class StashSpec::Bar
+end
