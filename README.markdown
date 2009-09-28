@@ -10,6 +10,22 @@ It does require memcached 1.4+ but you should be running that anyway (if you are
 
 Take a look and let me know what you think!
 
+# Installation
+
+Right now remix-stash is designed to be run as a gem. I've published it to both github and gemcutter (preferred). You can also safely use this as a rails plugin, just check out the source in your plugin directory and it will be automatically loaded.
+
+## Install via GemCutter
+
+    gem install remix-stash --source=http://gemcutter.org/
+
+## Install via GitHub
+
+    gem install binary42-remix-stash --source=http://gems.github.com/
+
+# Specifications
+
+This project is tested with shoulda (install via the thoughtbot-shoulda gem on github) and takes the philosophy that fewer moving parts is better. So to avoid complex runners just run `spec/spec.rb` or the spec you are interested in directly. In order for the specs to function, you should have memcached 1.4+ running locally on port 11211.
+
 # TODO
 
 * namespacing
