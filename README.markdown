@@ -1,6 +1,4 @@
-Real docs coming soon! Check out the examples directory for more.
-
-# Quick Specs
+# Quick & Dirty Specs
 
 New API! I've rethought a lot of the API and this comes with a lot of new capabilities. More work is being done on making it as expressive as possible without terrible overhead. This includes vectorized keys which allow emulation of partial cache clearing as well as nice shortcuts like eval and gate for expressions. Options, clusters, and implicit scope are easy to manage on a stash-by-stash basis. Keys are also easy to pass in as it will create composite keys from whatever you pass in (as long as it has to_s) so no more ugly string interpolation all over the place.
 
