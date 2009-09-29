@@ -197,14 +197,14 @@ private
   def canonical_key(keys, opts)
     v = vector(opts)
     namespace = opts[:namespace].to_s
-    namespace +
+    (namespace +
       if @scope
         "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector(opts)}"
       elsif v
         keys.join(KEY_SEPARATOR) << v
       else
         keys.join(KEY_SEPARATOR)
-      end
+      end) * 20_000
   end
 
   def cluster(opts = {})

@@ -30,6 +30,7 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 
 # Future Work
 
+* INVESTIGATE memcached segfault!
 * implement the rest of the memcached 1.4 binary API (replace, append, prepend)
 * allow swappable cluster types for consistent hashing, ketama, etc...
 * support non-marshal value dumps configured per stash
