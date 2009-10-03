@@ -40,13 +40,6 @@ class Remix::Stash
     end
   end
 
-  def add(*keys)
-    opts = default_opts(keys)
-    value = keys.pop
-    key = canonical_key(keys, opts)
-    cluster(opts).select(key) {|io| Protocol.add(io, key, value, opts[:ttl])}
-  end
-
   def clear(*keys)
     opts = default_opts(keys)
     if keys.empty?
