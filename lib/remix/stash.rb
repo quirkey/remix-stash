@@ -185,8 +185,8 @@ class Remix::Stash
       Protocol.stat(io, 'items') {|key, value|
         part, slab_index, subkey = *key.split(prefix)
         slab_index = slab_index.to_i
-        stats[:slabs][slab_index - 1] ||= {:index => slab_index}
-        stats[:slabs][slab_index - 1][subkey.to_sym] = normalize_stat(value)
+        stats[:slabs][slab_index] ||= {:index => slab_index}
+        stats[:slabs][slab_index][subkey.to_sym] = normalize_stat(value)
       }
       Protocol.stat(io, 'slabs') {|key, value|
         parts = key.split(prefix)
@@ -195,9 +195,11 @@ class Remix::Stash
         else
           slab_index, subkey = parts.values_at(-2, -1)
           slab_index = slab_index.to_i
-          stats[:slabs][slab_index - 1][subkey.to_sym] = normalize_stat(value)
+          stats[:slabs][slab_index] ||= {:index => slab_index}
+          stats[:slabs][slab_index][subkey.to_sym] = normalize_stat(value)
         end
       }
+      stats[:slabs].compact!
       stats
     end
   end
