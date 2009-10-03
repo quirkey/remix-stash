@@ -241,25 +241,6 @@ class StashSpec < Spec
 
   end
 
-  context '#delete' do
-
-    should 'remove a key from the cache' do
-      stash[:foo] = 42
-      stash.delete(:foo)
-      assert_nil stash[:foo]
-    end
-
-    should 'return true when deleted' do
-      stash[:foo] = 42
-      assert stash.delete(:foo)
-    end
-
-    should 'return false when not found' do
-      assert !stash.delete(:foo)
-    end
-
-  end
-
   context '#eval' do
 
     should 'evaluate the block on a cache miss' do

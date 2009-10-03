@@ -94,12 +94,6 @@ class Remix::Stash
     @opts
   end
 
-  def delete(*keys)
-    opts = default_opts(keys)
-    key = canonical_key(keys, opts)
-    cluster(opts).select(key) {|io| Protocol.delete(io, key)}
-  end
-
   def eval(*keys)
     opts = default_opts(keys)
     key = canonical_key(keys, opts)
