@@ -72,6 +72,18 @@ class StashSpec < Spec
 
   end
 
+  context 'large keys' do
+
+    should 'automatically use hexadecimal MD5 digests for large keys' do
+      large = 'a' * 300
+      digest = Digest::MD5.hexdigest(large)
+      stash[large] = 42
+      assert_equal 42, stash[large]
+      assert_equal 42, stash[digest]
+    end
+
+  end
+
   context 'namespacing' do
 
     should 'allow unique namespaces to be used throughout the keyspace' do

@@ -240,7 +240,7 @@ private
   def canonical_key(keys, opts)
     v = vector(opts)
     namespace = opts[:namespace].to_s
-    namespace +
+    key = namespace +
       if @scope
         "#{implicit_scope}#{keys.join(KEY_SEPARATOR)}#{vector(opts)}"
       elsif v
@@ -248,6 +248,7 @@ private
       else
         keys.join(KEY_SEPARATOR)
       end
+    key.size > 250 ? Digest::MD5.hexdigest(key) : key
   end
 
   def cluster(opts = {})

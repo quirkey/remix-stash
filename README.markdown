@@ -41,6 +41,5 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 * quiet/multi command forms (will require a protocol refactoring most likely)
 * accelerated binary API implementation with Ruby fallback
 * redis support for vectors and/or value
-* large key handling support
 * UDP support (more experimentation on the tradeoffs)
 * EventMachine integration (non-blocking?)
