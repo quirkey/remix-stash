@@ -18,6 +18,8 @@ Right now remix-stash is designed to be run as a gem. I've published it to both 
 
 ## Install via GitHub
 
+Warning: THIS IS CURRENTLY LIMITED TO VERSION 0.9.6 (until github reenables gem building).
+
     gem install binary42-remix-stash --source=http://gems.github.com/
 
 # Using Remix::Stash
@@ -30,15 +32,13 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 
 # Future Work
 
-* add block form
+* add block form to access response headers directly
 * get/set add/replace read/write should allow a CAS flag to be passed
-* complete stats API
 * allow swappable cluster types for consistent hashing, ketama, etc...
 * support non-marshal value dumps configured per stash
 * support multi vector sets
 * thread safe cluster
 * quiet/multi command forms (will require a protocol refactoring most likely)
-* server pings
 * accelerated binary API implementation with Ruby fallback
 * redis support for vectors and/or value
 * large key handling support
