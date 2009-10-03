@@ -322,6 +322,18 @@ class StashSpec < Spec
 
   end
 
+  context '#ping' do
+
+    should 'ping each node and return boolean success flags' do
+      assert stash.ping.all?
+    end
+
+    should 'allow a named cluster to be pinged' do
+      assert stash.ping(:default).all?
+    end
+
+  end
+
   context '#read' do
 
     should 'read raw strings from the cache' do

@@ -123,6 +123,14 @@ module Remix::Stash::Protocol
     end
   end
 
+  PING_PACKET = HEADER_FORMAT
+  def ping(io)
+    header = [REQUEST, NO_OP, 0, 0, 0, 0, 0, 0, 0].pack(PING_PACKET)
+    io.write(header)
+    resp = read_resp(io)
+    resp[:status] == NO_ERROR
+  end
+
   PREPEND_PACKET = HEADER_FORMAT + 'a*a*'
   def prepend(io, key, data)
     header = [REQUEST, PREPEND, key.size, 0, 0, 0, data.size + key.size, 0, 0, key, data].pack(PREPEND_PACKET)

@@ -136,6 +136,10 @@ class Remix::Stash
     cluster(opts).select(key) {|io| Protocol.incr(io, key, step, opts[:default], opts[:ttl])}
   end
 
+  def ping(name = default[:cluster])
+    cluster(:cluster => name).map {|io| Protocol.ping(io)}
+  end
+
   def read(*keys)
     opts = default_opts(keys)
     key = canonical_key(keys, opts)
