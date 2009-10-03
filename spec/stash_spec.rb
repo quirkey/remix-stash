@@ -390,6 +390,26 @@ class StashSpec < Spec
       assert_equal 42, stash.eval(:a) {fail 'expected cache hit'}
     end
 
+    should 'take a time to live flag (:ttl) in seconds' do
+      stash.set(:yes, 'yeah', :ttl => 0)
+      stash.set(:no, 'nope', :ttl => 1)
+      sleep(1.5)
+      assert_equal 'yeah', stash.get(:yes)
+      assert_nil stash.get(:no)
+    end
+
+    should 'take an operation flag (:op)' do
+      stash.set(:foo, 'foo', :op => :add)
+      assert_equal 'foo', stash.get(:foo)
+      stash.set(:foo, 'bar', :op => :add)
+      assert_equal 'foo', stash.get(:foo)
+      stash.set(:foo, 'bar', :op => :replace)
+      assert_equal 'bar', stash.get(:foo)
+      stash.clear(:foo)
+      stash.set(:foo, 'foo', :op => :replace)
+      assert_nil stash.get(:foo)
+    end
+
   end
 
   context '#transaction' do
@@ -412,6 +432,26 @@ class StashSpec < Spec
     should 'write raw strings to the cache' do
       stash.write(42, '42')
       assert_equal '42', stash.read(42)
+    end
+
+    should 'take a time to live flag (:ttl) in seconds' do
+      stash.write(:yes, 'yeah', :ttl => 0)
+      stash.write(:no, 'nope', :ttl => 1)
+      sleep(1.5)
+      assert_equal 'yeah', stash.read(:yes)
+      assert_nil stash.read(:no)
+    end
+
+    should 'take an operation flag (:op)' do
+      stash.write(:foo, 'foo', :op => :add)
+      assert_equal 'foo', stash.read(:foo)
+      stash.write(:foo, 'bar', :op => :add)
+      assert_equal 'foo', stash.read(:foo)
+      stash.write(:foo, 'bar', :op => :replace)
+      assert_equal 'bar', stash.read(:foo)
+      stash.clear(:foo)
+      stash.write(:foo, 'foo', :op => :replace)
+      assert_nil stash.read(:foo)
     end
 
   end

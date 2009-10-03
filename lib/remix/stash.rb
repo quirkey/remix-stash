@@ -161,7 +161,16 @@ class Remix::Stash
     opts = default_opts(keys)
     value = keys.pop
     key = canonical_key(keys, opts)
-    cluster(opts).select(key) {|io| Protocol.set(io, key, dump_value(value), opts[:ttl])}
+    cluster(opts).select(key) {|io|
+      case opts[:op]
+      when :add
+        Protocol.add(io, key, dump_value(value), opts[:ttl])
+      when :replace
+        Protocol.replace(io, key, dump_value(value), opts[:ttl])
+      else
+        Protocol.set(io, key, dump_value(value), opts[:ttl])
+      end
+    }
   end
   alias []= set
 
@@ -175,7 +184,16 @@ class Remix::Stash
     opts = default_opts(keys)
     value = keys.pop
     key = canonical_key(keys, opts)
-    cluster(opts).select(key) {|io| Protocol.set(io, key, value, opts[:ttl])}
+    cluster(opts).select(key) {|io|
+      case opts[:op]
+      when :add
+        Protocol.add(io, key, value, opts[:ttl])
+      when :replace
+        Protocol.replace(io, key, value, opts[:ttl])
+      else
+        Protocol.set(io, key, value, opts[:ttl])
+      end
+    }
   end
 
 protected

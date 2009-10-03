@@ -105,6 +105,14 @@ module Remix::Stash::Protocol
     end
   end
 
+  REPLACE_PACKET = HEADER_FORMAT + 'NNa*a*'
+  def replace(io, key, data, ttl = 0)
+    header = [REQUEST, REPLACE, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, ttl, key, data].pack(REPLACE_PACKET)
+    io.write(header)
+    resp = read_resp(io)
+    resp[:status] == NO_ERROR
+  end
+
   SET_PACKET = HEADER_FORMAT + 'NNa*a*'
   def set(io, key, data, ttl = 0)
     header = [REQUEST, SET, key.size, 8, 0, 0, data.size + key.size + 8, 0, 0, 0, ttl, key, data].pack(SET_PACKET)
