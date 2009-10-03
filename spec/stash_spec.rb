@@ -210,6 +210,11 @@ class StashSpec < Spec
       assert_equal 42, stash.decr(:a, 3)
     end
 
+    should 'allow a default value to be passed' do
+      stash.decr(:def, 10, :default => 42)
+      assert_equal 41, stash.decr(:def, 1)
+    end
+
   end
 
   context '#default' do
@@ -327,6 +332,11 @@ class StashSpec < Spec
 
     should 'return nil if it failed to increment' do
       assert_nil stash.incr(:a, 3)
+    end
+
+    should 'allow a default value to be passed' do
+      stash.incr(:def, 10, :default => 42)
+      assert_equal 43, stash.incr(:def, 1)
     end
 
   end

@@ -74,7 +74,7 @@ class Remix::Stash
     opts = default_opts(keys)
     step = keys.pop
     key = canonical_key(keys, opts)
-    cluster(opts).select(key) {|io| Protocol.decr(io, key, step)}
+    cluster(opts).select(key) {|io| Protocol.decr(io, key, step, opts[:default], opts[:ttl])}
   end
 
   def default(opts = nil)
@@ -139,7 +139,7 @@ class Remix::Stash
     opts = default_opts(keys)
     step = keys.pop
     key = canonical_key(keys, opts)
-    cluster(opts).select(key) {|io| Protocol.incr(io, key, step)}
+    cluster(opts).select(key) {|io| Protocol.incr(io, key, step, opts[:default], opts[:ttl])}
   end
 
   def read(*keys)

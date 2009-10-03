@@ -32,7 +32,6 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 
 * add block form
 * get/set add/replace read/write should allow a CAS flag to be passed
-* incr/decr should take default value flags
 * complete stats API
 * allow swappable cluster types for consistent hashing, ketama, etc...
 * support non-marshal value dumps configured per stash

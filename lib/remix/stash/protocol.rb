@@ -66,10 +66,15 @@ module Remix::Stash::Protocol
     resp[:status] == NO_ERROR
   end
 
-  DECR_PACKET = HEADER_FORMAT + 'NNQNa*'
-  def decr(io, key, step)
+  DECR_PACKET = HEADER_FORMAT + 'NNNNNa*'
+  def decr(io, key, step, default = nil, ttl = nil)
     low, high = split64(step)
-    header = [REQUEST, DECREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION, key].pack(DECR_PACKET)
+    if default
+      default_low, default_high = split64(default)
+      header = [REQUEST, DECREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, default_high, default_low, ttl, key].pack(DECR_PACKET)
+    else
+      header = [REQUEST, DECREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, 0, COUNTER_FAULT_EXPIRATION, key].pack(DECR_PACKET)
+    end
     io.write(header)
     resp = read_resp(io)
     if resp[:status] == NO_ERROR
@@ -102,10 +107,15 @@ module Remix::Stash::Protocol
     resp[:status] == NO_ERROR ? resp[:body][GET_BODY] : nil
   end
 
-  INCR_PACKET = HEADER_FORMAT + 'NNQNa*'
-  def incr(io, key, step)
+  INCR_PACKET = HEADER_FORMAT + 'NNNNNa*'
+  def incr(io, key, step, default = nil, ttl = nil)
     low, high = split64(step)
-    header = [REQUEST, INCREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, COUNTER_FAULT_EXPIRATION, key].pack(INCR_PACKET)
+    if default
+      default_low, default_high = split64(default)
+      header = [REQUEST, INCREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, default_high, default_low, ttl, key].pack(DECR_PACKET)
+    else
+      header = [REQUEST, INCREMENT, key.size, 20, 0, 0, key.size + 20, 0, 0, high, low, 0, 0, COUNTER_FAULT_EXPIRATION, key].pack(INCR_PACKET)
+    end
     io.write(header)
     resp = read_resp(io)
     if resp[:status] == NO_ERROR
