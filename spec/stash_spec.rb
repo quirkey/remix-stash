@@ -396,7 +396,7 @@ class StashSpec < Spec
     should 'take a time to live flag (:ttl) in seconds' do
       stash.set(:yes, 'yeah', :ttl => 0)
       stash.set(:no, 'nope', :ttl => 1)
-      sleep(1.5)
+      sleep(2)
       assert_equal 'yeah', stash.get(:yes)
       assert_nil stash.get(:no)
     end
@@ -470,7 +470,7 @@ class StashSpec < Spec
     should 'take a time to live flag (:ttl) in seconds' do
       stash.write(:yes, 'yeah', :ttl => 0)
       stash.write(:no, 'nope', :ttl => 1)
-      sleep(1.5)
+      sleep(2)
       assert_equal 'yeah', stash.read(:yes)
       assert_nil stash.read(:no)
     end
