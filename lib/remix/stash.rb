@@ -168,6 +168,36 @@ class Remix::Stash
   end
   alias []= set
 
+  def stats(name = default[:cluster])
+    cluster(:cluster => name).map do |io|
+      stats = {:settings => {}, :slabs => [], :foo => {}}
+      Protocol.stat(io) {|key, value|
+        stats[key.to_sym] = normalize_stat(value)
+      }
+      Protocol.stat(io, 'settings') {|key, value|
+        stats[:settings][key.to_sym] = normalize_stat(value)
+      }
+      prefix = stats[:settings][:stat_key_prefix]
+      Protocol.stat(io, 'items') {|key, value|
+        part, slab_index, subkey = *key.split(prefix)
+        slab_index = slab_index.to_i
+        stats[:slabs][slab_index - 1] ||= {:index => slab_index}
+        stats[:slabs][slab_index - 1][subkey.to_sym] = normalize_stat(value)
+      }
+      Protocol.stat(io, 'slabs') {|key, value|
+        parts = key.split(prefix)
+        if parts.size == 1
+          stats["slabs_#{key}".to_sym] = normalize_stat(value)
+        else
+          slab_index, subkey = parts.values_at(-2, -1)
+          slab_index = slab_index.to_i
+          stats[:slabs][slab_index - 1][subkey.to_sym] = normalize_stat(value)
+        end
+      }
+      stats
+    end
+  end
+
   def transaction
     yield self
   ensure
@@ -245,6 +275,10 @@ private
     logger = default_opts[:logger]
     logger && logger.error("[stash] Unable to load marshal stream: #{data.inspect}")
     nil
+  end
+
+  def normalize_stat(value)
+    value == "NULL" ? nil : (Integer(value) rescue Float(value)) rescue value
   end
 
   def vector(opts)

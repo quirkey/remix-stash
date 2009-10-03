@@ -147,6 +147,17 @@ module Remix::Stash::Protocol
     resp[:status] == NO_ERROR
   end
 
+  STAT_PACKET = HEADER_FORMAT + 'a*'
+  def stat(io, info = '')
+    header = [REQUEST, STAT, info.size, 0, 0, 0, info.size, 0, 0, info].pack(STAT_PACKET)
+    io.write(header)
+    loop do
+      stat = read_stat(io, info)
+      break unless stat[:key]
+      yield *stat.values_at(:key, :value)
+    end
+  end
+
 private
 
   COUNTER_SPLIT = 'NN'
@@ -164,6 +175,18 @@ private
     body_length.zero? ?
       {:status => status} :
       {:status => status, :body => io.read(body_length)}
+  end
+
+  STAT_HEADER = '@2n@6nN'
+  def read_stat(io, info)
+    header = io.read(24)
+    header or raise Remix::Stash::ProtocolError,
+    "No data in response header"
+    key_length, status, body_length = *header.unpack(STAT_HEADER)
+    stat = {:status => status}
+    stat[:key] = io.read(key_length) if key_length > 0
+    stat[:value] = io.read(body_length - key_length) if body_length - key_length > 0
+    stat
   end
 
   def split64(n)

@@ -2,6 +2,7 @@ require 'socket'
 require 'digest/md5'
 
 class Remix::Stash::Cluster
+  include Enumerable
   include Socket::Constants
 
   @@connections = {}

@@ -403,6 +403,36 @@ class StashSpec < Spec
 
   end
 
+  context '#stats' do
+
+    should 'return stats for the cluster set on that stash' do
+      stats = stash.stats
+      local = stats[0]
+      assert_kind_of Array, stats
+      assert_kind_of Hash, local
+      assert_kind_of String, local[:version]
+      assert_kind_of Integer, local[:pid]
+      assert_kind_of Float, local[:rusage_system]
+      assert_kind_of Hash, local[:settings]
+      assert_kind_of Array, local[:slabs]
+      assert_kind_of Hash, local[:slabs][0]
+    end
+
+    should 'return stats when given a cluster name' do
+      stats = stash.stats(:default)
+      local = stats[0]
+      assert_kind_of Array, stats
+      assert_kind_of Hash, local
+      assert_kind_of String, local[:version]
+      assert_kind_of Integer, local[:pid]
+      assert_kind_of Float, local[:rusage_system]
+      assert_kind_of Hash, local[:settings]
+      assert_kind_of Array, local[:slabs]
+      assert_kind_of Hash, local[:slabs][0]
+    end
+
+  end
+
   context '#transaction' do
 
     should 'cycle the vector at the end of the transaction block' do
