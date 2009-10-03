@@ -31,7 +31,6 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 # Future Work
 
 * add block form
-* implement the rest of the memcached 1.4 binary API (replace, append, prepend)
 * get/set add/replace read/write should allow a CAS flag to be passed
 * incr/decr should take default value flags
 * complete stats API

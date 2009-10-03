@@ -454,6 +454,13 @@ class StashSpec < Spec
       assert_nil stash.read(:foo)
     end
 
+    should 'allow :append and :prepend for :op' do
+      stash.write(:foo, '1')
+      stash.write(:foo, '2', :op => :append)
+      stash.write(:foo, '0', :op => :prepend)
+      assert_equal '012', stash.read(:foo)
+    end
+
   end
 
 end

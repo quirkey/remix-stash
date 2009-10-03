@@ -190,6 +190,10 @@ class Remix::Stash
         Protocol.add(io, key, value, opts[:ttl])
       when :replace
         Protocol.replace(io, key, value, opts[:ttl])
+      when :append
+        Protocol.append(io, key, value)
+      when :prepend
+        Protocol.prepend(io, key, value)
       else
         Protocol.set(io, key, value, opts[:ttl])
       end

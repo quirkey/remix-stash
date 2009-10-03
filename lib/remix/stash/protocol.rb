@@ -58,6 +58,14 @@ module Remix::Stash::Protocol
     resp[:status] == NO_ERROR
   end
 
+  APPEND_PACKET = HEADER_FORMAT + 'a*a*'
+  def append(io, key, data)
+    header = [REQUEST, APPEND, key.size, 0, 0, 0, data.size + key.size, 0, 0, key, data].pack(APPEND_PACKET)
+    io.write(header)
+    resp = read_resp(io)
+    resp[:status] == NO_ERROR
+  end
+
   DECR_PACKET = HEADER_FORMAT + 'NNQNa*'
   def decr(io, key, step)
     low, high = split64(step)
@@ -103,6 +111,14 @@ module Remix::Stash::Protocol
     if resp[:status] == NO_ERROR
       parse_counter(resp[:body])
     end
+  end
+
+  PREPEND_PACKET = HEADER_FORMAT + 'a*a*'
+  def prepend(io, key, data)
+    header = [REQUEST, PREPEND, key.size, 0, 0, 0, data.size + key.size, 0, 0, key, data].pack(PREPEND_PACKET)
+    io.write(header)
+    resp = read_resp(io)
+    resp[:status] == NO_ERROR
   end
 
   REPLACE_PACKET = HEADER_FORMAT + 'NNa*a*'
