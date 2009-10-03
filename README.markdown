@@ -30,17 +30,17 @@ This project is tested with shoulda (install via the thoughtbot-shoulda gem on g
 
 # Future Work
 
+* add block form
 * implement the rest of the memcached 1.4 binary API (replace, append, prepend)
+* get/set add/replace read/write should allow a CAS flag to be passed
+* incr/decr should take default value flags
+* complete stats API
 * allow swappable cluster types for consistent hashing, ketama, etc...
 * support non-marshal value dumps configured per stash
 * support multi vector sets
 * thread safe cluster
-* add block form
 * quiet/multi command forms (will require a protocol refactoring most likely)
 * server pings
-* complete stats API
-* incr/decr should take default value flags
-* get/set add/replace read/write should allow a CAS flag to be passed
 * accelerated binary API implementation with Ruby fallback
 * redis support for vectors and/or value
 * large key handling support
