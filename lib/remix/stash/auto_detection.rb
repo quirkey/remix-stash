@@ -1,5 +1,5 @@
 if defined?(Rails)
-  stash.default(:logger => Rails.logger)
+  Remix::Stash::Runtime.logger = Rails.logger
 
   module Remix::Stash::RailsSupport
   private
@@ -24,4 +24,9 @@ if defined?(Rails)
     stash.default(:namespace => namespace)
   end
 
+end
+
+unless Remix::Stash::Runtime.logger
+  require 'logger'
+  Remix::Stash::Runtime.logger = Logger.new(STDERR)
 end

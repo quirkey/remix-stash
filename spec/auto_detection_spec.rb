@@ -5,7 +5,7 @@ class AutoDetectionSpec < Spec
   context 'Rails' do
 
     should 'link the logger object' do
-      assert_equal Rails.logger, stash.default[:logger]
+      assert_equal Rails.logger, Remix::Stash::Runtime.logger
     end
 
     should 'link cycle_action to an after filter' do

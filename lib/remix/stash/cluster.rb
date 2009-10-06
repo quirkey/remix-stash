@@ -4,6 +4,7 @@ require 'digest/md5'
 class Remix::Stash::Cluster
   include Enumerable
   include Socket::Constants
+  include Remix::Stash::Runtime
 
   @@connections = {}
 
@@ -24,7 +25,12 @@ class Remix::Stash::Cluster
       rescue Errno::EPIPE, Errno::ECONNRESET, Remix::Stash::ProtocolError
         io.close
         retry
-      rescue Errno::EAGAIN, Errno::ECONNREFUSED
+      rescue Errno::EAGAIN
+        logger.error("[stash] Cluster socket timeout on #{@hosts[(hash + try) % count][0]}")
+        io.close
+        next
+      rescue Errno::ECONNREFUSED
+        logger.error("[stash] Cluster connection refused on #{@hosts[(hash + try) % count][0]}")
         next
       end
     end
@@ -48,7 +54,12 @@ class Remix::Stash::Cluster
       rescue Errno::EPIPE, Errno::ECONNRESET, Remix::Stash::ProtocolError
         io.close
         retry
-      rescue Errno::EAGAIN, Errno::ECONNREFUSED
+      rescue Errno::EAGAIN
+        logger.error("[stash] Cluster socket timeout on #{@hosts[(hash + try) % count][0]}")
+        io.close
+        next
+      rescue Errno::ECONNREFUSED
+        logger.error("[stash] Cluster connection refused on #{@hosts[(hash + try) % count][0]}")
         next
       end
     end

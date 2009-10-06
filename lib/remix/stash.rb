@@ -1,9 +1,12 @@
 module Remix; end
 
 class Remix::Stash
+  require 'remix/stash/runtime'
   require 'remix/stash/extension'
   require 'remix/stash/cluster'
   require 'remix/stash/protocol'
+
+  include Runtime
 
   attr_accessor :name
 
@@ -279,8 +282,7 @@ private
       rescue Exception
       end
     end
-    logger = default_opts[:logger]
-    logger && logger.error("[stash] Unable to load marshal stream: #{data.inspect}")
+    logger.error("[stash] Unable to load marshal stream: #{data.inspect}")
     nil
   end
 
