@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{remix-stash}
-  s.version = "1.0.0"
+  s.version = "1.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Mitchell"]
-  s.date = %q{2009-10-03}
+  s.date = %q{2009-10-06}
   s.email = %q{binary42@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -36,12 +36,14 @@ Gem::Specification.new do |s|
      "lib/remix/stash/cluster.rb",
      "lib/remix/stash/extension.rb",
      "lib/remix/stash/protocol.rb",
+     "lib/remix/stash/runtime.rb",
      "remix-stash.gemspec",
      "spec/auto_detection_spec.rb",
      "spec/extension_spec.rb",
      "spec/spec.rb",
      "spec/stash_spec.rb",
      "spec/support/bar.rb",
+     "spec/support/rails/.gitignore",
      "spec/support/rails/README",
      "spec/support/rails/Rakefile",
      "spec/support/rails/app/controllers/application_controller.rb",
@@ -61,10 +63,6 @@ Gem::Specification.new do |s|
      "spec/support/rails/config/routes.rb",
      "spec/support/rails/db/seeds.rb",
      "spec/support/rails/doc/README_FOR_APP",
-     "spec/support/rails/log/development.log",
-     "spec/support/rails/log/production.log",
-     "spec/support/rails/log/server.log",
-     "spec/support/rails/log/test.log",
      "spec/support/rails/public/404.html",
      "spec/support/rails/public/422.html",
      "spec/support/rails/public/500.html",
