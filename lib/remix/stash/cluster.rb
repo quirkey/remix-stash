@@ -63,6 +63,7 @@ class Remix::Stash::Cluster
         next
       end
     end
+    return if ignore_cluster_errors
     raise Remix::Stash::ClusterError,
       "Unable to find suitable host to communicate with for #{key.inspect} (MD5-32=#{hash})"
   end
