@@ -100,7 +100,7 @@ class Remix::Stash
     cluster(opts).select(key) {|io|
       value = Protocol.get(io, key)
       if value
-        Marshal.load(value)
+        load_value(value)
       else
         value = yield(*keys)
         Protocol.set(io, key, dump_value(value), opts[:ttl])
