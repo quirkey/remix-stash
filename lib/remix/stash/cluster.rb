@@ -26,11 +26,9 @@ class Remix::Stash::Cluster
         io.close
         retry
       rescue Errno::EAGAIN
-        logger.error("[stash] Cluster socket timeout on #{@hosts[(hash + try) % count][0]}")
         io.close
         next
       rescue Errno::ECONNREFUSED
-        logger.error("[stash] Cluster connection refused on #{@hosts[(hash + try) % count][0]}")
         next
       end
     end
