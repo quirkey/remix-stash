@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{remix-stash}
-  s.version = "1.0.2"
+  s.version = "1.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Mitchell"]
-  s.date = %q{2009-10-06}
+  s.date = %q{2009-10-11}
   s.email = %q{binary42@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -97,6 +97,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/auto_detection_spec.rb",
      "spec/extension_spec.rb",
+     "spec/runtime_spec.rb",
      "spec/spec.rb",
      "spec/stash_spec.rb",
      "spec/support/bar.rb",
