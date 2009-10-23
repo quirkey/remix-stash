@@ -100,16 +100,20 @@ class Remix::Stash
   def eval(*keys)
     opts = default_opts(keys)
     key = canonical_key(keys, opts)
+    activated = false
+    value = nil
     cluster(opts).select(key) {|io|
       value = Protocol.get(io, key)
       if value
-        load_value(value)
+        value = load_value(value)
+        activated = true
       else
         value = yield(*keys)
+        activated = true
         Protocol.set(io, key, dump_value(value), opts[:ttl])
-        value
       end
     }
+    activated ? value : yield(*keys)
   end
 
   def gate(*keys)
