@@ -16,12 +16,6 @@ Right now remix-stash is designed to be run as a gem. I've published it to both 
 
     gem install remix-stash --source=http://gemcutter.org/
 
-## Install via GitHub
-
-Warning: THIS IS CURRENTLY LIMITED TO VERSION 0.9.6 (until github reenables gem building).
-
-    gem install binary42-remix-stash --source=http://gems.github.com/
-
 # Using Remix::Stash
 
 The examples directory has some simple code snippets that introduce general features of the library. In general, everything should just work after `require 'remix/stash'`. This includes integration with Rails and automatic pick-up of Heroku style memcached environment variables. Of course, this library is completely independent of Rails and does not need environment variables to function or be used.
