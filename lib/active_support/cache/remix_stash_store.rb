@@ -11,7 +11,7 @@ module ActiveSupport
         end
         Remix::Stash.define_cluster(:environment => servers)
         stash.default(:cluster => :environment)      
-        @stash = stash.new(:as_cache)
+        @stash = Remix::Stash.new(:active_support_cache)
       end
 
       def read(name, options = nil)
@@ -31,7 +31,7 @@ module ActiveSupport
 
       def exist?(name, options = nil)
         super
-        @data.read(name)
+        @stash.read(name)
       end
 
       def clear
