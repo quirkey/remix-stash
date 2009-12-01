@@ -278,7 +278,7 @@ private
 
   def load_value(data)
     Marshal.load(data) if data
-  rescue TypeError, ArgumentError => e
+  rescue TypeError, NameError, ArgumentError => e
     if e.message =~ /undefined class\/module (.*)/
       retry if begin
         $1.split('::').inject(Object) {|m,x|
