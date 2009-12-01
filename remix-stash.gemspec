@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{remix-stash}
-  s.version = "1.0.4"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Mitchell"]
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
      "examples/stash.rb",
      "harness.rb",
      "init.rb",
+     "lib/active_support/cache/remix_stash_store.rb",
      "lib/remix/stash.rb",
      "lib/remix/stash/auto_detection.rb",
      "lib/remix/stash/cluster.rb",
@@ -38,6 +39,7 @@ Gem::Specification.new do |s|
      "lib/remix/stash/protocol.rb",
      "lib/remix/stash/runtime.rb",
      "remix-stash.gemspec",
+     "spec/active_support_cache_spec.rb",
      "spec/auto_detection_spec.rb",
      "spec/extension_spec.rb",
      "spec/spec.rb",
@@ -88,13 +90,15 @@ Gem::Specification.new do |s|
      "spec/support/rails/test/performance/browsing_test.rb",
      "spec/support/rails/test/test_helper.rb"
   ]
+  s.has_rdoc = true
   s.homepage = %q{http://github.com/binary42/remix-stash}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.1}
   s.summary = %q{Remix your memcache}
   s.test_files = [
-    "spec/auto_detection_spec.rb",
+    "spec/active_support_cache_spec.rb",
+     "spec/auto_detection_spec.rb",
      "spec/extension_spec.rb",
      "spec/spec.rb",
      "spec/stash_spec.rb",
@@ -124,7 +128,7 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
+    s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
     else

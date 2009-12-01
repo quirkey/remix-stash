@@ -2,6 +2,8 @@ require 'rubygems'
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/lib'
 require 'remix/stash'
 
+include Remix
+
 begin
   require 'memcached'
   CCache = Memcached.new('localhost:11211')
