@@ -17,11 +17,11 @@ if defined?(Rails)
 
   if servers = ENV['MEMCACHED_SERVERS']
     Remix::Stash.define_cluster(:environment => servers.split(','))
-    stash.default(:cluster => :environment)
+    Remix.stash.default(:cluster => :environment)
   end
 
   if namespace = ENV['MEMCACHED_NAMESPACE']
-    stash.default(:namespace => namespace)
+    Remix.stash.default(:namespace => namespace)
   end
 
 end

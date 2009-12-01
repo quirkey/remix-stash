@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/spec'
 
 class AutoDetectionSpec < Spec
+  include Remix
 
   context 'Rails' do
 

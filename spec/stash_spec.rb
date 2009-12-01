@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/spec'
 
 class StashSpec < Spec
+  include Remix
 
   def setup
     stash.clear
