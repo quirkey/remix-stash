@@ -1,4 +1,6 @@
 if defined?(Rails)
+  require 'active_support/cache/remix_stash_store'
+  
   Remix::Stash::Runtime.logger = Rails.logger
 
   module Remix::Stash::RailsSupport
