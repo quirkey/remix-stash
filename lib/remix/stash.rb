@@ -39,7 +39,7 @@ class Remix::Stash
       @local = @opts = {:coherency => :action, :ttl => 0, :cluster => :default}
     else
       @local = {}
-      @opts = stash.default.dup
+      @opts = Remix.stash.default.dup
     end
   end
 

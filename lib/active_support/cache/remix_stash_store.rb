@@ -3,15 +3,19 @@ require 'remix/stash'
 module ActiveSupport
   module Cache
     class RemixStashStore < Store
+      include Remix
       
       def initialize(*servers)
+        name = :active_support_cache
         if servers.last.is_a?(Hash)
           # were passing extra settings
-          stash.default(servers.pop)
+          opts = servers.pop
+          name = opts.delete(:name) if opts[:name]
+          stash.default(opts)
         end
         Remix::Stash.define_cluster(:environment => servers)
-        stash.default(:cluster => :environment)      
-        @stash = Remix::Stash.new(:active_support_cache)
+        stash(name).default(:cluster => :environment)      
+        @stash = stash(name)
       end
 
       def read(name, options = nil)
