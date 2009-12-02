@@ -12,7 +12,7 @@ else
   ENV['MEMCACHED_SERVERS'] = 'localhost:11211'
   ENV['MEMCACHED_NAMESPACE'] = 'spec'
 
-  $LOAD_PATH << File.dirname(__FILE__) + '/../lib'
+  $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
   require 'remix/stash'
 
   Spec = Test::Unit::TestCase

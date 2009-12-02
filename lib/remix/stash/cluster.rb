@@ -11,7 +11,7 @@ class Remix::Stash::Cluster
   attr_reader :hosts
 
   def initialize(hosts)
-    @hosts = hosts.map {|x|
+    @hosts = [hosts].flatten.map {|x|
       host, port = x.split(':')
       [x, host, (port || 11211).to_i]
     }.sort_by {|(_,h,p)| [h,p]}

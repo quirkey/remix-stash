@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/spec'
+require 'active_support/cache/remix_stash_store'
 
 class ActiveSupportCacheSpec < Spec
 
