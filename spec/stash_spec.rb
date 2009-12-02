@@ -99,11 +99,13 @@ class StashSpec < Spec
   context 'value serialization' do
 
     should 'trigger lazily loaded constants on loading' do
-      class StashSpec::Foo; end
+      class ::StashSpec
+        class Foo; end
+        autoload :Bar, 'spec/support/bar.rb'
+      end
       bar = Marshal.dump(StashSpec::Foo.new).gsub(/Foo/, 'Bar')
-      autoload :Bar, 'spec/support/bar.rb'
       stash.write(:x, bar)
-      assert_kind_of Bar, stash[:x]
+      assert_kind_of StashSpec::Bar, stash[:x]
     end
 
   end
