@@ -20,6 +20,8 @@ Right now remix-stash is designed to be run as a gem. I've published it to both 
 
 The examples directory has some simple code snippets that introduce general features of the library. In general, everything should just work after `require 'remix/stash'`. This includes integration with Rails and automatic pick-up of Heroku style memcached environment variables. Of course, this library is completely independent of Rails and does not need environment variables to function or be used.
 
+The API is exported onto the `Remix` module as the `stash` method. Direct calls as well as inclusion/extension of the module on specific objects should work fine. When in doubt try starting with `Remix.stash` as a style. NOTE: Prior to version 1.1 this was mixed in to `Object` as well. If your code depended on this, please just `include Remix` to retain compatibility.
+
 # Specifications
 
 This project is tested with shoulda (install via the thoughtbot-shoulda gem on github) and takes the philosophy that fewer moving parts is better. So to avoid complex runners just run `spec/spec.rb` or the spec you are interested in directly. In order for the specs to function, you should have memcached 1.4+ running locally on port 11211.
