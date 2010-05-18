@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{remix-stash}
-  s.version = "1.1.2"
+  s.version = "1.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Mitchell"]
-  s.date = %q{2009-12-02}
+  s.date = %q{2010-05-18}
   s.email = %q{binary42@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -90,11 +90,10 @@ Gem::Specification.new do |s|
      "spec/support/rails/test/performance/browsing_test.rb",
      "spec/support/rails/test/test_helper.rb"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/binary42/remix-stash}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.1}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Remix your memcache}
   s.test_files = [
     "spec/active_support_cache_spec.rb",
@@ -128,12 +127,15 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 2
+    s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_development_dependency(%q<rails>, [">= 0"])
     else
+      s.add_dependency(%q<rails>, [">= 0"])
     end
   else
+    s.add_dependency(%q<rails>, [">= 0"])
   end
 end
 

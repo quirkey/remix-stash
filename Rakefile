@@ -1,3 +1,5 @@
+require 'lib/remix/stash'
+
 begin
   require 'jeweler'
 
@@ -8,7 +10,7 @@ begin
     gemspec.email = 'binary42@gmail.com'
     gemspec.homepage = 'http://github.com/binary42/remix-stash'
     gemspec.authors = ['Brian Mitchell']
-    gemspec.add_development_dependenct 'rails'
+    gemspec.add_development_dependency 'rails'
   end
 
   Jeweler::GemcutterTasks.new
