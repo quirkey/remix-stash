@@ -1,6 +1,8 @@
 module Remix; end
 
 class Remix::Stash
+  VERSION = '1.1.5'
+  
   require 'remix/stash/runtime'
   require 'remix/stash/extension'
   require 'remix/stash/cluster'

@@ -32,6 +32,13 @@ class ActiveSupportCacheSpec < Spec
         assert_equal 'bar', @stash['foo']
       end
       
+      should "write key with options" do
+        @cache.write('foo', 'baz', :ttl => 2)
+        assert_equal 'baz', @stash['foo']
+        sleep 3
+        assert_equal nil, @stash['foo']
+      end
+      
       should "read key" do
         @stash['foo'] = 'bar'
         assert_equal 'bar', @cache.read('foo')
