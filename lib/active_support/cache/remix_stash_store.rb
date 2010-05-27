@@ -18,23 +18,27 @@ module ActiveSupport
         @stash = stash(name)
       end
 
-      def read(name, options = {})
+      def read(name, options = nil)
         super
+        options ||= {}
         @stash.get(name, options)
       end
 
-      def write(name, value, options = {})
+      def write(name, value, options = nil)
         super
+        options ||= {}
         @stash.set(name, value.freeze, options)
       end
 
-      def delete(name, options = {})
+      def delete(name, options = nil)
         super
+        options ||= {}
         @stash.clear(name, options)
       end
 
-      def exist?(name, options = {})
+      def exist?(name, options = nil)
         super
+        options ||= {}
         @stash.read(name, options)
       end
 

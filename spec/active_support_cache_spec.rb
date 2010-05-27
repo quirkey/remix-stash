@@ -21,12 +21,10 @@ class ActiveSupportCacheSpec < Spec
       setup do
         @cache = ActiveSupport::Cache.lookup_store(:remix_stash_store, 'localhost:11211')
         @stash = Remix::Stash.new(:active_support_cache)
-      end
-      
-      teardown do
         @stash.clear
+        @cache.clear
       end
-      
+            
       should "write key" do
         @cache.write('foo', 'bar')
         assert_equal 'bar', @stash['foo']
@@ -39,9 +37,19 @@ class ActiveSupportCacheSpec < Spec
         assert_equal nil, @stash['foo']
       end
       
+      should "write key even when options are nil" do
+        @cache.write('foo2', 'baz', nil)
+        assert_equal 'baz', @cache.read('foo2')
+      end
+      
       should "read key" do
         @stash['foo'] = 'bar'
         assert_equal 'bar', @cache.read('foo')
+      end
+      
+      should "read key with nil options" do
+        @stash['foo'] = 'bar'
+        assert_equal 'bar', @cache.read('foo', nil)
       end
       
       should "delete key" do
